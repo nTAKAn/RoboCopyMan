@@ -3,12 +3,15 @@
 ## 何をするものか？
 
 - robocopy コマンドを定期的に実行するだけのソフトです。
-でも案外このシンプルさを持つソフトはないので自分では重宝しています。
+でも案外このシンプルさを持つソフトは世間にないので自分では重宝しています。
 
-- ふだん Dropbox を作業フォルダに使用しているのですが心配性なので、定期的にローカルの NAS にバックアップをとりたいなと思い
+> ふだん Dropbox を作業フォルダに使用しているのですが心配性なので、定期的にローカルの NAS にバックアップをとりたいなと思い
 いろいろ試してみました。
-しかしながら、バッチファイルは窓が消せなかったり、タスクスケジューラでやろうにもパスワードレスのMicrosoftアカウントではやっぱり窓が消せなかったり、
-その他あるかもしれないのですがよくわからないのでこのソフトを作りました。
+> しかしながら、バッチファイルは窓が消せなかったり、タスクスケジューラでやろうにもパスワードレスのMicrosoftアカウントではやっぱり窓が消せなかったり、
+その他あるかもしれないのですが、結局よくわからないのでこのソフトを作りました。
+
+> ちなみに、RoboCopyScheduler というフリーソフトがあるのですが、それが私の環境ではうまく使えなかったんですよね・・・
+> RoboCopyScheduler がうまく使える方はそちらを使用した方がよいです。RoboCopyScheduler の方が機能が豊富です。
 
 ## インストール、アンインストール
 
@@ -23,23 +26,28 @@
 
 ## 使い方
 
-settings フォルダの中に、バックアップ情報を書き込んだ toml ファイルを格納しておきます。
+- settings フォルダの中に、バックアップ情報を書き込んだ toml ファイルを格納しておきます。
 
-x-drive.toml、x-drive.toml が入ってますが、これは私の設定ファイルですので参考にして製作してください。
-変えるポイントは、title、srcDir、dstDir、logDir でよいです。
+- x-drive.toml、x-drive.toml が入ってますが、これは私の設定ファイルですので参考にして製作してください。
+変更するポイントは、title、srcDir、dstDir、logDir でよいかと思います。
+
+## 設定ファイルの書き方
 
 - title は、好きな名前をつけれます。
 - srcDir は、コピー元
 - dstDir は、コピー先
-- logDir は、ログの出力先になります。実際のログファイル名は、dstDir に 日付 をつけたファイル名で保存されます。
+- logDir は、ログの出力先になります。実際のログファイル名は、dstDir の 最後のフォルダ名 に 日付 をつけたファイル名で保存されます。
 （MainPC-XDrive-20240427-190427.txt のような感じです。）
+- logDatetimeFmt は、ログファイルの日付フォーマットです。C#の日付フォーマットに準拠しています。
+
 - intervalMinutes は、バックアップの実行間隔で、この時間ごとに robocopy 実行されます。
-- delayMinutes は、アプリ起動後初回の実行時間です。アプリ起動直後に robocopy が実行されるとまずい場合
-（例えば、ネットワークドライブの接続を待ってなど）は適当に設定します。
-- option は、何も設定しないと "/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE" が設定されます。
-（この機能はテストしてません）
-- exclude は、何も設定しないと "\"System Volume Information\" \"$RECYCLE.BIN\"" が設定されます。
-（この機能はテストしてません）
+- delayMinutes は、アプリ起動後初回の実行時間です。
+（例えば、ネットワークドライブの接続をまつなど）
+
+- option は、オプション設定です。
+(例えば・・・"/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE")
+- exclude は、除外するファイルです。
+(例えば・・・ "\"System Volume Information\" \"$RECYCLE.BIN\"")
 
 ```
 # -*- coding: utf-8 -*-
@@ -53,17 +61,22 @@ srcDir = "X:"
 dstDir = "M:\\backups\\main-pc-daily\\MainPC-XDrive"
 # ログファイルの出力先ディレクトリ
 logDir = "M:\\backups\\main-pc-daily\\logs"
+# ログファイル名に使用する日付フォーマット (C#の日付フォーマットに準拠)
+logDatetimeFmt = "yyyyMMdd-HHmmdd"
+
+# robocopy のオプション
+option = "/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE"
+# 除外するファイル・ディレクトリ
+xdFiles = "\"System Volume Information\" \"$RECYCLE.BIN\""
 
 # バックアップ間隔（分）
 intervalMinutes = 60
 # 初回実行を遅らせるディレイ（分）
 delayMinutes = 5
 
-# robocopy のオプション
-# option =
-
-# 除外するファイル・ディレクトリ
-# exclude =
+# 生成される robocopy のコマンド例
+# LogFilePath = {LogDir}\\{dstDir のディレクトリ名}-{logDatetimeFmt}.txt
+# robocopy {SrcDir} {DstDir} /LOG:{LogFilePath} /XD {XdFiles} {Option}
 ```
 
 - この設定で実行されるコマンド
@@ -111,5 +124,4 @@ robocopy X: M:\backups\main-pc-daily\MainPC-XDrive /LOG:M:\backups\main-pc-daily
 ## 今後の予定
 
 - 機能的にはもういいかなという感じです。
-- コメントがほとんどないので、コード整理ついでにコメントを記入していきます。
 - バックアップ設定を GUI化 したいですね。
