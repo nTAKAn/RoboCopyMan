@@ -10,6 +10,10 @@ namespace RoboCopyMan
         /// 結果ダイアログ
         /// </summary>
         private FormResult? _formResult;
+        /// <summary>
+        /// About ダイアログ
+        /// </summary>
+        private FormAbout? _formAbout;
 
         public FormMain()
         {
@@ -87,6 +91,13 @@ namespace RoboCopyMan
                     _formResult.Close();
                     _formResult = null;
                 }
+
+                // About ダイアログが表示されている場合は閉じる
+                if (_formAbout != null)
+                {
+                    _formAbout.Close();
+                    _formAbout = null;
+                }
             }
             catch (Exception ex)
             {
@@ -125,8 +136,17 @@ namespace RoboCopyMan
         /// <param name="e"></param>
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using var form = new FormAbout();
-            form.ShowDialog();
+            // 既に表示されている場合はフォーカスを戻す
+            if (_formAbout != null)
+            {
+                _formAbout.WindowState = FormWindowState.Normal; // 最小化されている場合も考慮
+                _formAbout.Activate();
+                return;
+            }
+
+            _formAbout = new FormAbout();
+            _formAbout.FormClosing += _formAbout_FormClosing;
+            _formAbout.ShowDialog();
         }
 
         /// <summary>
@@ -167,7 +187,16 @@ namespace RoboCopyMan
             _formResult?.Dispose();
             _formResult = null;
         }
-
+        /// <summary>
+        /// About ダイアログが閉じられた時の後始末
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _formAbout_FormClosing(object? sender, FormClosingEventArgs e)
+        {
+            _formAbout?.Dispose();
+            _formAbout = null;
+        }
 
     }
 }

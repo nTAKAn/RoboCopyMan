@@ -1,5 +1,7 @@
 ﻿#pragma warning disable IDE1006 // 命名スタイル
 
+using System.Diagnostics;
+
 namespace RoboCopyMan
 {
     public partial class FormResult : Form
@@ -85,6 +87,47 @@ namespace RoboCopyMan
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        /// <summary>
+        /// 選択されているバックアップ設定の robocopy コマンドをクリップボードにコピーする
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void makeCommandToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var task = SelectedTask;
+            if (task is null)
+                return;
+
+            Robocopy robocopy = new(task.Setting);
+            Clipboard.SetText(robocopy.Command);
+        }
+
+        /// <summary>
+        /// 選択されているバックアップ設定ファイルを編集する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void editSettingFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var task = SelectedTask;
+            if (task is null)
+                return;
+
+            try
+            {
+                ProcessStartInfo pi = new ProcessStartInfo()
+                {
+                    FileName = task.Filepath,
+                    UseShellExecute = true, // 重要
+                };
+                Process.Start(pi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

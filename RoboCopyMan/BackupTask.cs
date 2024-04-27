@@ -15,6 +15,11 @@
         /// </summary>
         public BackupSetting Setting { get; private init; }
         /// <summary>
+        /// 設定ファイル読み込み時のファイルパスを取得する
+        /// </summary>
+        public string Filepath { get; private init; }
+
+        /// <summary>
         /// 次回バックアップ時間を取得、設定する
         /// </summary>
         public DateTime NextTriggerTime { get; set; }
@@ -49,9 +54,11 @@
         /// コンストラクタ
         /// </summary>
         /// <param name="setting">バックアップ設定</param>
-        public BackupTask(BackupSetting setting)
+        /// <param name="filepath">設定ファイル読み込み時のファイルパス</param>
+        public BackupTask(BackupSetting backupSetting, string filepath)
         {
-            Setting = new(setting);
+            Setting = new(backupSetting);
+            Filepath = filepath;
             UpdateNextTriggerTime();
         }
 

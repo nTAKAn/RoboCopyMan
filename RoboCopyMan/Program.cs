@@ -1,5 +1,6 @@
 
 using Microsoft.Extensions.Configuration;
+using RoboCopyMan.Properties;
 using Serilog;
 
 namespace RoboCopyMan
@@ -68,7 +69,8 @@ namespace RoboCopyMan
                 // バックアップ設定の読み込み
                 try
                 {
-                    _backupManager = new(BackupManager.LoadSettings("settings"));
+                    var settings = BackupManager.LoadSettings("settings");
+                    _backupManager = new(settings);
                 }
                 catch (Exception ex)
                 {

@@ -32,6 +32,9 @@
             _menuStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
+            toolToolStripMenuItem = new ToolStripMenuItem();
+            makeCommandToolStripMenuItem = new ToolStripMenuItem();
+            editSettingFileToolStripMenuItem = new ToolStripMenuItem();
             _statusStrip = new StatusStrip();
             _toolStripStatusLabel_SrcDir = new ToolStripStatusLabel();
             _toolStripStatusLabel_DstDir = new ToolStripStatusLabel();
@@ -46,7 +49,7 @@
             // 
             // _menuStrip
             // 
-            _menuStrip.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem });
+            _menuStrip.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, toolToolStripMenuItem });
             _menuStrip.Location = new Point(0, 0);
             _menuStrip.Name = "_menuStrip";
             _menuStrip.Size = new Size(627, 24);
@@ -66,6 +69,27 @@
             exitToolStripMenuItem.Size = new Size(119, 22);
             exitToolStripMenuItem.Text = "閉じる(&C)";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
+            // 
+            // toolToolStripMenuItem
+            // 
+            toolToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { makeCommandToolStripMenuItem, editSettingFileToolStripMenuItem });
+            toolToolStripMenuItem.Name = "toolToolStripMenuItem";
+            toolToolStripMenuItem.Size = new Size(60, 20);
+            toolToolStripMenuItem.Text = "ツール(&T)";
+            // 
+            // makeCommandToolStripMenuItem
+            // 
+            makeCommandToolStripMenuItem.Name = "makeCommandToolStripMenuItem";
+            makeCommandToolStripMenuItem.Size = new Size(298, 22);
+            makeCommandToolStripMenuItem.Text = "robocopy コマンドをクリップボードにコピーする(&C)";
+            makeCommandToolStripMenuItem.Click += makeCommandToolStripMenuItem_Click;
+            // 
+            // editSettingFileToolStripMenuItem
+            // 
+            editSettingFileToolStripMenuItem.Name = "editSettingFileToolStripMenuItem";
+            editSettingFileToolStripMenuItem.Size = new Size(298, 22);
+            editSettingFileToolStripMenuItem.Text = "設定ファイルを編集する(&E)";
+            editSettingFileToolStripMenuItem.Click += editSettingFileToolStripMenuItem_Click;
             // 
             // _statusStrip
             // 
@@ -161,5 +185,8 @@
         private ColumnHeader columnHeader_result;
         private ToolStripStatusLabel _toolStripStatusLabel_SrcDir;
         private ToolStripStatusLabel _toolStripStatusLabel_DstDir;
+        private ToolStripMenuItem toolToolStripMenuItem;
+        private ToolStripMenuItem makeCommandToolStripMenuItem;
+        private ToolStripMenuItem editSettingFileToolStripMenuItem;
     }
 }

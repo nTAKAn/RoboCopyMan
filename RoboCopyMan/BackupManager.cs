@@ -67,13 +67,14 @@ namespace RoboCopyMan
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        /// <param name="settings">バックアップ設定のリスト</param>
-        public BackupManager(List<BackupSetting> settings)
+        /// <param name="settings">(バックアップ設定, 設定ファイルのパス) を要素とするリスト</param>
+        public BackupManager(List<(BackupSetting, string)> settings)
         {
             BackupTasks = [];
             foreach (var setting in settings)
             {
-                BackupTasks.Add(new(setting));
+                var (backupSetting, filepath) = setting;
+                BackupTasks.Add(new(backupSetting, filepath));
             }
         }
 
@@ -81,26 +82,27 @@ namespace RoboCopyMan
         /// 指定したディレクトリからバックアップ設定ファイルを読み込む
         /// </summary>
         /// <param name="baseDirPath">バックアップ設定ファイルが格納されたディレクトリパス</param>
-        /// <returns></returns>
-        public static List<BackupSetting> LoadSettings(string baseDirPath)
+        /// <returns>(読み込んだバックアップ設定, 設定ファイルのパス) を要素とするリスト</returns>
+        public static List<(BackupSetting, string)> LoadSettings(string baseDirPath)
         {
-            List<BackupSetting> settings = [];
-            var files = Directory.GetFiles(baseDirPath);
+            List<(BackupSetting, string)> settings = [];
+            var filepaths = Directory.GetFiles(baseDirPath);
+            List<string> paths = [];
 
-            foreach (var file in files)
+            foreach (var filepath in filepaths)
             {
-                if (Path.GetExtension(file) != ".toml")
+                if (Path.GetExtension(filepath) != ".toml")
                     continue;
 
                 try
                 {
-                    var setting = BackupSetting.Load(file);
-                    settings.Add(setting);
+                    var backupSetting = BackupSetting.Load(filepath);
+                    settings.Add((backupSetting, filepath));
                 }
                 catch (Exception ex)
                 {
                     // 読み込めない場合でもログを残して継続する
-                    Log.Error(ex, $"設定ファイルの読み込み中に例外が発生しました. {file}");
+                    Log.Error(ex, $"設定ファイルの読み込み中に例外が発生しました. {filepath}");
                 }
             }
 
@@ -130,8 +132,6 @@ namespace RoboCopyMan
                 {
                     Log.Error(ex, $"{task.Setting.Title}: バックアップ中に例外が発生しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
                 }
-
-
             }
 
             if (backupExecuted)
