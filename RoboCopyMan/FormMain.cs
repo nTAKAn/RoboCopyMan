@@ -91,6 +91,12 @@ namespace RoboCopyMan
             Program.BackupManager.Execute(true);
         }
 
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using var form = new FormAbout();
+            form.ShowDialog();
+        }
+
         private void _notifyIcon_DoubleClick(object sender, EventArgs e)
         {
             ShowResultDialog();

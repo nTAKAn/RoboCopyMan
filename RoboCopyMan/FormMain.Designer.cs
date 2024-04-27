@@ -34,9 +34,11 @@
             _contextMenuStrip = new ContextMenuStrip(components);
             forcedBackupToolStripMenuItem = new ToolStripMenuItem();
             showResultDialogToolStripMenuItem = new ToolStripMenuItem();
+            aboutToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
             exitToolStripMenuItem = new ToolStripMenuItem();
             _timer = new System.Windows.Forms.Timer(components);
+            toolStripSeparator2 = new ToolStripSeparator();
             _contextMenuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -51,33 +53,40 @@
             // _contextMenuStrip
             // 
             _contextMenuStrip.ImageScalingSize = new Size(20, 20);
-            _contextMenuStrip.Items.AddRange(new ToolStripItem[] { forcedBackupToolStripMenuItem, showResultDialogToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
+            _contextMenuStrip.Items.AddRange(new ToolStripItem[] { forcedBackupToolStripMenuItem, showResultDialogToolStripMenuItem, toolStripSeparator2, aboutToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
             _contextMenuStrip.Name = "_contextMenuStrip";
-            _contextMenuStrip.Size = new Size(195, 98);
+            _contextMenuStrip.Size = new Size(219, 126);
             // 
             // forcedBackupToolStripMenuItem
             // 
             forcedBackupToolStripMenuItem.Name = "forcedBackupToolStripMenuItem";
-            forcedBackupToolStripMenuItem.Size = new Size(194, 22);
+            forcedBackupToolStripMenuItem.Size = new Size(218, 22);
             forcedBackupToolStripMenuItem.Text = "手動バックアップ実行(&E)";
             forcedBackupToolStripMenuItem.Click += forcedBackupToolStripMenuItem_Click;
             // 
             // showResultDialogToolStripMenuItem
             // 
             showResultDialogToolStripMenuItem.Name = "showResultDialogToolStripMenuItem";
-            showResultDialogToolStripMenuItem.Size = new Size(194, 22);
+            showResultDialogToolStripMenuItem.Size = new Size(218, 22);
             showResultDialogToolStripMenuItem.Text = "結果ダイアログを開く(&V)...";
             showResultDialogToolStripMenuItem.Click += showResultDialogToolStripMenuItem_Click;
+            // 
+            // aboutToolStripMenuItem
+            // 
+            aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            aboutToolStripMenuItem.Size = new Size(218, 22);
+            aboutToolStripMenuItem.Text = "RoboCopyMan について(&A)...";
+            aboutToolStripMenuItem.Click += aboutToolStripMenuItem_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(191, 6);
+            toolStripSeparator1.Size = new Size(215, 6);
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(194, 22);
+            exitToolStripMenuItem.Size = new Size(218, 22);
             exitToolStripMenuItem.Text = "終了(&E)";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
@@ -85,6 +94,11 @@
             // 
             _timer.Interval = 1000;
             _timer.Tick += _timer_Tick;
+            // 
+            // toolStripSeparator2
+            // 
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new Size(215, 6);
             // 
             // FormMain
             // 
@@ -108,5 +122,7 @@
         private ToolStripMenuItem showResultDialogToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripMenuItem forcedBackupToolStripMenuItem;
+        private ToolStripMenuItem aboutToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator2;
     }
 }
