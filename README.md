@@ -17,8 +17,10 @@ x-drive.toml が入ってますが、これは私の設定ファイルですの�
 - dstDir は、コピー先
 - logDir は、ログの出力先になります。実際のログファイル名は、dstDir に 日付 をつけたファイル名で保存されます。
 （MainPC-XDrive-20240427-190427.txt のような感じです。）
-
-- option は、何も書かないと /MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE が設定されます。
+- intervalMinutes は、バックアップの実行間隔で、この時間ごとに robocopy が走ります。
+- delayMinutes は、アプリ起動後初回の実行時間です。アプリ起動直後に robocopy が走るとまずい場合
+（例えば、ネットワークドライブの接続を待ってなど）は適当に設定します。
+- option は、何も設定しないと "/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE" が設定されます。
 - exclude は、何も設定しないと "\"System Volume Information\" \"$RECYCLE.BIN\"" が設定されます。
 
 ```
