@@ -49,6 +49,7 @@
 - exclude は、除外するファイルです。
 (例えば・・・ "\"System Volume Information\" \"$RECYCLE.BIN\"")
 
+### 設定ファイル例
 ```
 # -*- coding: utf-8 -*-
 
@@ -79,12 +80,12 @@ delayMinutes = 5
 # robocopy {SrcDir} {DstDir} /LOG:{LogFilePath} /XD {XdFiles} {Option}
 ```
 
-- この設定で実行されるコマンド
+### 上記設定で実行されるコマンド
 ```
 robocopy X: M:\backups\main-pc-daily\MainPC-XDrive /LOG:M:\backups\main-pc-daily\logs\MainPC-XDrive-20240427-200427.txt /XD "System Volume Information" "$RECYCLE.BIN" /MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE
 ```
 
-- ログファイルの例
+### 上記設定での robocopy ログファイルの例
 ```
 -------------------------------------------------------------------------------
    ROBOCOPY     ::     Windows の堅牢性の高いファイル コピー                              
