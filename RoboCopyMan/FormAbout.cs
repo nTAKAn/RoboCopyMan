@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.LinkLabel;
 
 namespace RoboCopyMan
 {
@@ -22,7 +24,12 @@ namespace RoboCopyMan
         {
             try
             {
-                System.Diagnostics.Process.Start(_GITHUB_URL);
+                ProcessStartInfo pi = new ProcessStartInfo()
+                {
+                    FileName = _GITHUB_URL,
+                    UseShellExecute = true, // 重要
+                };
+                Process.Start(pi);
             }
             catch (Exception ex)
             {
