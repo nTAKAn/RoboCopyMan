@@ -87,7 +87,6 @@ namespace RoboCopyMan
         {
             List<(BackupSetting, string)> settings = [];
             var filepaths = Directory.GetFiles(baseDirPath);
-            List<string> paths = [];
 
             foreach (var filepath in filepaths)
             {

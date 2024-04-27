@@ -1,6 +1,6 @@
-﻿#pragma warning disable IDE1006 // 命名スタイル
+﻿using System.Diagnostics;
 
-using System.Diagnostics;
+#pragma warning disable IDE1006 // 命名スタイル
 
 namespace RoboCopyMan
 {
@@ -117,7 +117,7 @@ namespace RoboCopyMan
 
             try
             {
-                ProcessStartInfo pi = new ProcessStartInfo()
+                ProcessStartInfo pi = new()
                 {
                     FileName = task.Filepath,
                     UseShellExecute = true, // 重要

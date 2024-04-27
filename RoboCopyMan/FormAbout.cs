@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 
+#pragma warning disable IDE1006 // 命名スタイル
+
 namespace RoboCopyMan
 {
     public partial class FormAbout : Form
@@ -14,7 +16,7 @@ namespace RoboCopyMan
         {
             try
             {
-                ProcessStartInfo pi = new ProcessStartInfo()
+                ProcessStartInfo pi = new()
                 {
                     FileName = _GITHUB_URL,
                     UseShellExecute = true, // 重要

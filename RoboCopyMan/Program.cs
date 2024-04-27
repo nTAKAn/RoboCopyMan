@@ -1,6 +1,5 @@
 
 using Microsoft.Extensions.Configuration;
-using RoboCopyMan.Properties;
 using Serilog;
 
 namespace RoboCopyMan
