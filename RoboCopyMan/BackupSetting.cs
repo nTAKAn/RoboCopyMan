@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tomlyn.Model;
-using Tomlyn;
+﻿using Tomlyn;
 
 namespace RoboCopyMan
 {
@@ -107,7 +101,7 @@ namespace RoboCopyMan
 
             string xdFiles = (string)table["xdFiles"];
             string option = (string)table["option"];
-            
+
             var intervalMin = (long)table["intervalMinutes"];
             var delayMin = (long)table["delayMinutes"];
 
@@ -118,7 +112,7 @@ namespace RoboCopyMan
                 DstDir = dstDir,
                 LogDir = logDir,
                 LogDatetimeFmt = logDatetimeFmt,
-                
+
                 XdFiles = xdFiles,
                 Option = option,
 

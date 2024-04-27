@@ -1,10 +1,4 @@
 ﻿using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RoboCopyMan
 {
@@ -137,7 +131,7 @@ namespace RoboCopyMan
                     Log.Error(ex, $"{task.Setting.Title}: バックアップ中に例外が発生しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
                 }
 
-                
+
             }
 
             if (backupExecuted)

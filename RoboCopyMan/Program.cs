@@ -1,7 +1,6 @@
 
-using Serilog;
-using Serilog.Events;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace RoboCopyMan
 {
@@ -15,7 +14,7 @@ namespace RoboCopyMan
         /// <summary>
         /// バックアップマネージャ
         /// </summary>
-        private static BackupManager? _backupManager= null;
+        private static BackupManager? _backupManager = null;
         /// <summary>
         /// バックアップマネージャ
         /// </summary>
@@ -23,7 +22,7 @@ namespace RoboCopyMan
         {
             get => _backupManager ?? throw new NullReferenceException("バックアップマネージャが初期化されていません.");
         }
-        
+
 
         /// <summary>
         ///  The main entry point for the application.
