@@ -1,5 +1,7 @@
 #pragma warning disable IDE1006 // 命名スタイル
 
+using Serilog;
+
 namespace RoboCopyMan
 {
     public partial class FormMain : Form
@@ -47,20 +49,31 @@ namespace RoboCopyMan
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _timer.Stop();
-            _timer.Dispose();
-
-            _notifyIcon.Visible = false;
-
-            if (_formResult != null)
+            try
             {
-                _formResult.Close();
-                _formResult.Dispose();
-                _formResult = null;
+                _timer.Stop();
+                _timer.Dispose();
+
+                _notifyIcon.Visible = false;
+
+                if (_formResult != null)
+                {
+                    Program.BackupManager.BackupTaskExecuted -= _backupManager_BackupTaskExecuted;
+                    _formResult.Close();
+                    _formResult = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                Log.Error(ex, "終了処理でエラーが発生しました.");
+            }
+            finally
+            {
+                Close();
+                Application.Exit();
             }
 
-            Close();
-            Application.Exit();
         }
 
         private void _timer_Tick(object sender, EventArgs e)
