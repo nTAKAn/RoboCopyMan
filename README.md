@@ -1,7 +1,7 @@
 # RoboCopyMan
 ---
 
-## Release v1.0.0-beta.4
+## Release v1.0.0-beta.4 (2024.04.28)
 ### 機能追加とバグ修正
 #### バグ修正
 - Aboutダイアログが何度も開けるのを修正。
