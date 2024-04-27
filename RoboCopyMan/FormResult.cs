@@ -10,9 +10,7 @@ namespace RoboCopyMan
             get
             {
                 if (_listView.SelectedItems.Count == 0)
-                {
                     return null;
-                }
 
                 var index = _listView.SelectedItems[0].Index;
                 return Program.BackupManager.BackupTasks[index];
@@ -27,19 +25,19 @@ namespace RoboCopyMan
         private void FormResult_Load(object sender, EventArgs e)
         {
             UpdateResults();
-            //_timer.Start();
 
+            // 表示変更のためにバックアップマネージャのバックアップタスク実行イベントを登録
             Program.BackupManager.BackupTaskExecuted += _backupManager_BackupTaskExecuted;
         }
 
         private void FormResult_FormClosing(object sender, FormClosingEventArgs e)
         {
+            // イベントの登録解除
             Program.BackupManager.BackupTaskExecuted -= _backupManager_BackupTaskExecuted;
         }
 
         private void FormResult_FormClosed(object sender, FormClosedEventArgs e)
         {
-
         }
 
         void _backupManager_BackupTaskExecuted(object sender, EventArgs e)
@@ -79,19 +77,14 @@ namespace RoboCopyMan
         {
             var task = SelectedTask;
             if (task is null)
-            {
                 return;
-            }
-
 
             System.Diagnostics.Process.Start("explorer.exe", task.Setting.LogDir);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            Close();
         }
-
-        
     }
 }

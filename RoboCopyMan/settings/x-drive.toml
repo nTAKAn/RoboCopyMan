@@ -9,14 +9,19 @@ srcDir = "X:"
 dstDir = "M:\\backups\\main-pc-daily\\MainPC-XDrive"
 # ログファイルの出力先ディレクトリ
 logDir = "M:\\backups\\main-pc-daily\\logs"
+# ログファイル名に使用する日付フォーマット (C#の日付フォーマットに準拠)
+logDatetimeFmt = "yyyyMMdd-HHmmdd"
+
+# robocopy のオプション
+option = "/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE"
+# 除外するファイル・ディレクトリ
+xdFiles = "\"System Volume Information\" \"$RECYCLE.BIN\""
 
 # バックアップ間隔（分）
 intervalMinutes = 60
 # 初回実行を遅らせるディレイ（分）
 delayMinutes = 5
 
-# robocopy のオプション
-# option = 
-
-# 除外するファイル・ディレクトリ
-# exclude = 
+# 生成される robocopy のコマンド例
+# LogFilePath = {LogDir}\\{dstDir のディレクトリ名}-{logDatetimeFmt}.txt
+# robocopy {SrcDir} {DstDir} /LOG:{LogFilePath} /XD {XdFiles} {Option}

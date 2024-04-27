@@ -49,7 +49,6 @@ namespace RoboCopyMan
 
                 return DateTime.Now >= NextTriggerTime;
             }
-
         }
 
         /// <summary>
@@ -77,9 +76,9 @@ namespace RoboCopyMan
         }
 
         /// <summary>
-        /// バックアップを実行する
+        /// バックアップを実行する(現在時刻が次回バックアップ未満である場合はバックアップされない)
         /// </summary>
-        /// <param name="forced">true: 強制的にバックアップする, false 通常バックアップ</param>
+        /// <param name="forced">true: 現在時刻に関わらず強制的にバックアップする, false 通常バックアップ</param>
         /// <param name="updateNextTrigger">true: 次回バックアップ時間を更新する, false 更新しない</param>
         /// <returns>true: バックアップが実行された, false: バックアップは実行されなかった</returns>
         public bool Execute(bool forced = false, bool updateNextTrigger = true)

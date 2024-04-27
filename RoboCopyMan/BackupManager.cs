@@ -8,8 +8,14 @@ using System.Threading.Tasks;
 
 namespace RoboCopyMan
 {
+    /// <summary>
+    /// バックアップマネージャ
+    /// </summary>
     internal class BackupManager
     {
+        /// <summary>
+        /// バックアップタスクリスト
+        /// </summary>
         public List<BackupTask> BackupTasks { get; private init; }
 
         /// <summary>
@@ -52,11 +58,22 @@ namespace RoboCopyMan
         /// </summary>
         public int TaskCount { get => BackupTasks.Count; }
 
-
+        /// <summary>
+        /// バックアップタスクが実行されたときに発生するイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public delegate void BackupTaskExecutedEventHandler(object sender, EventArgs e);
+        /// <summary>
+        /// バックアップタスクが実行されたときに発生するイベント
+        /// </summary>
         public event BackupTaskExecutedEventHandler? BackupTaskExecuted;
 
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="settings">バックアップ設定のリスト</param>
         public BackupManager(List<BackupSetting> settings)
         {
             BackupTasks = [];
@@ -66,6 +83,11 @@ namespace RoboCopyMan
             }
         }
 
+        /// <summary>
+        /// 指定したディレクトリからバックアップ設定ファイルを読み込む
+        /// </summary>
+        /// <param name="baseDirPath">バックアップ設定ファイルが格納されたディレクトリパス</param>
+        /// <returns></returns>
         public static List<BackupSetting> LoadSettings(string baseDirPath)
         {
             List<BackupSetting> settings = [];
@@ -76,13 +98,25 @@ namespace RoboCopyMan
                 if (Path.GetExtension(file) != ".toml")
                     continue;
 
-                var setting = BackupSetting.Load(file);
-                settings.Add(setting);
+                try
+                {
+                    var setting = BackupSetting.Load(file);
+                    settings.Add(setting);
+                }
+                catch (Exception ex)
+                {
+                    // 読み込めない場合でもログを残して継続する
+                    Log.Error(ex, $"設定ファイルの読み込み中に例外が発生しました. {file}");
+                }
             }
 
             return settings;
         }
 
+        /// <summary>
+        /// バックアップを実行する
+        /// </summary>
+        /// <param name="forced">true: 現在時刻に関わらず強制的にバックアップする, false 通常バックアップ</param>
         public void Execute(bool forced = false)
         {
             bool backupExecuted = false;
