@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormResult));
             _menuStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
@@ -41,7 +40,6 @@
             columnHeader_lastBackupTime = new ColumnHeader();
             columnHeader_nextBackupTime = new ColumnHeader();
             columnHeader_result = new ColumnHeader();
-            _timer = new System.Windows.Forms.Timer(components);
             _menuStrip.SuspendLayout();
             _statusStrip.SuspendLayout();
             SuspendLayout();
@@ -81,14 +79,14 @@
             // _toolStripStatusLabel_SrcDir
             // 
             _toolStripStatusLabel_SrcDir.Name = "_toolStripStatusLabel_SrcDir";
-            _toolStripStatusLabel_SrcDir.Size = new Size(38, 17);
-            _toolStripStatusLabel_SrcDir.Text = "SrcDir";
+            _toolStripStatusLabel_SrcDir.Size = new Size(68, 17);
+            _toolStripStatusLabel_SrcDir.Text = "コピー元：　";
             // 
             // _toolStripStatusLabel_DstDir
             // 
             _toolStripStatusLabel_DstDir.Name = "_toolStripStatusLabel_DstDir";
-            _toolStripStatusLabel_DstDir.Size = new Size(39, 17);
-            _toolStripStatusLabel_DstDir.Text = "DstDir";
+            _toolStripStatusLabel_DstDir.Size = new Size(68, 17);
+            _toolStripStatusLabel_DstDir.Text = "コピー先：　";
             // 
             // _listView
             // 
@@ -104,6 +102,7 @@
             _listView.UseCompatibleStateImageBehavior = false;
             _listView.View = View.Details;
             _listView.SelectedIndexChanged += _listView_SelectedIndexChanged;
+            _listView.MouseDoubleClick += _listView_MouseDoubleClick;
             // 
             // columnHeader_title
             // 
@@ -124,11 +123,6 @@
             // 
             columnHeader_result.Text = "結果";
             columnHeader_result.Width = 200;
-            // 
-            // _timer
-            // 
-            _timer.Interval = 1000;
-            _timer.Tick += _timer_Tick;
             // 
             // FormResult
             // 
@@ -167,6 +161,5 @@
         private ColumnHeader columnHeader_result;
         private ToolStripStatusLabel _toolStripStatusLabel_SrcDir;
         private ToolStripStatusLabel _toolStripStatusLabel_DstDir;
-        private System.Windows.Forms.Timer _timer;
     }
 }

@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             _notifyIcon = new NotifyIcon(components);
             _contextMenuStrip = new ContextMenuStrip(components);
+            forcedBackupToolStripMenuItem = new ToolStripMenuItem();
             showResultDialogToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
             exitToolStripMenuItem = new ToolStripMenuItem();
@@ -50,9 +51,16 @@
             // _contextMenuStrip
             // 
             _contextMenuStrip.ImageScalingSize = new Size(20, 20);
-            _contextMenuStrip.Items.AddRange(new ToolStripItem[] { showResultDialogToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
+            _contextMenuStrip.Items.AddRange(new ToolStripItem[] { forcedBackupToolStripMenuItem, showResultDialogToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
             _contextMenuStrip.Name = "_contextMenuStrip";
-            _contextMenuStrip.Size = new Size(195, 54);
+            _contextMenuStrip.Size = new Size(195, 98);
+            // 
+            // forcedBackupToolStripMenuItem
+            // 
+            forcedBackupToolStripMenuItem.Name = "forcedBackupToolStripMenuItem";
+            forcedBackupToolStripMenuItem.Size = new Size(194, 22);
+            forcedBackupToolStripMenuItem.Text = "手動バックアップ実行(&E)";
+            forcedBackupToolStripMenuItem.Click += forcedBackupToolStripMenuItem_Click;
             // 
             // showResultDialogToolStripMenuItem
             // 
@@ -99,5 +107,6 @@
         private System.Windows.Forms.Timer _timer;
         private ToolStripMenuItem showResultDialogToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem forcedBackupToolStripMenuItem;
     }
 }

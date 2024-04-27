@@ -10,7 +10,7 @@ namespace RoboCopyMan
 {
     internal class BackupManager
     {
-        public List<BackupTask> Tasks { get; private init; }
+        public List<BackupTask> BackupTasks { get; private init; }
 
         /// <summary>
         /// エラーが発生しているかを調べる
@@ -19,7 +19,7 @@ namespace RoboCopyMan
         {
             get
             {
-                foreach (var task in Tasks)
+                foreach (var task in BackupTasks)
                 {
                     if (task.LastException != null)
                         return true;
@@ -30,14 +30,14 @@ namespace RoboCopyMan
         }
 
         /// <summary>
-        /// 直近の次回バックアップ時間
+        /// 次回バックアップ時間
         /// </summary>
         public DateTime NextBackupTime
         {
             get
             {
                 DateTime next = DateTime.MaxValue;
-                foreach (var task in Tasks)
+                foreach (var task in BackupTasks)
                 {
                     if (task.NextTriggerTime < next)
                         next = task.NextTriggerTime;
@@ -50,16 +50,19 @@ namespace RoboCopyMan
         /// <summary>
         /// バックアップタスクの数
         /// </summary>
-        public int TaskCount { get => Tasks.Count; }
+        public int TaskCount { get => BackupTasks.Count; }
 
+
+        public delegate void BackupTaskExecutedEventHandler(object sender, EventArgs e);
+        public event BackupTaskExecutedEventHandler? BackupTaskExecuted;
 
 
         public BackupManager(List<BackupSetting> settings)
         {
-            Tasks = [];
+            BackupTasks = [];
             foreach (var setting in settings)
             {
-                Tasks.Add(new(setting));
+                BackupTasks.Add(new(setting));
             }
         }
 
@@ -80,26 +83,31 @@ namespace RoboCopyMan
             return settings;
         }
 
-        public void Execute()
+        public void Execute(bool forced = false)
         {
-            foreach (var task in Tasks)
+            bool backupExecuted = false;
+
+            foreach (var task in BackupTasks)
             {
                 try
                 {
-                    if (task.IsTimeToBackup)
+                    if (task.Execute(forced))
                     {
-                        if (task.Execute())
-                        {
-                            Log.Information($"Backup task executed. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
-                            Log.Information($"Next trigger time: {task.NextTriggerTime}");
-                        }
+                        Log.Information($"{task.Setting.Title}: バックアップを実行しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
+                        Log.Information($"{task.Setting.Title}: 次回バックアップ時間: {task.NextTriggerTime}");
+                        backupExecuted = true;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, $"An error occurred while executing backup task. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
+                    Log.Error(ex, $"{task.Setting.Title}: バックアップ中に例外が発生しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
                 }
+
+                
             }
+
+            if (backupExecuted)
+                BackupTaskExecuted?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -1,6 +1,22 @@
-﻿title = "MainPC Y Drive Backup"
+﻿# -*- coding: utf-8 -*-
+
+# バックアップ設定のタイトル
+title = "MainPC X Drive Backup"
+
+# バックアップ元ディレクトリ
 srcDir = "Y:"
+# バックアップ先ディレクトリ
 dstDir = "M:\\backups\\main-pc-daily\\MainPC-YDrive"
+# ログファイルの出力先ディレクトリ
 logDir = "M:\\backups\\main-pc-daily\\logs"
+
+# バックアップ間隔（分）
 intervalMinutes = 60
+# 初回実行を遅らせるディレイ（分）
 delayMinutes = 5
+
+# robocopy のオプション
+# option = 
+
+# 除外するファイル・ディレクトリ
+# exclude = 
