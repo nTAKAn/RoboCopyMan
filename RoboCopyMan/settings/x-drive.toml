@@ -1,0 +1,5 @@
+﻿srcDir = "X:"
+dstDir = "M:\\backups\\main-pc-daily\\MainPC-XDrive"
+logDir = "M:\\backups\\main-pc-daily\\logs"
+intervalMinutes = 60
+delayMinutes = 5
