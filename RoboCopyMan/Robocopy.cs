@@ -10,7 +10,6 @@ namespace RoboCopyMan
     internal class Robocopy
     {
         public BackupSetting Setting { get; private init; }
-        
         public string LogFile { get; private init; }
         public string LogFilePath { get; private init; }
         public string Command { get; private set; }

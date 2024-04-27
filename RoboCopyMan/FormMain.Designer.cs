@@ -32,6 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             _notifyIcon = new NotifyIcon(components);
             _contextMenuStrip = new ContextMenuStrip(components);
+            showResultDialogToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator1 = new ToolStripSeparator();
             exitToolStripMenuItem = new ToolStripMenuItem();
             _timer = new System.Windows.Forms.Timer(components);
             _contextMenuStrip.SuspendLayout();
@@ -41,36 +43,50 @@
             // 
             _notifyIcon.ContextMenuStrip = _contextMenuStrip;
             _notifyIcon.Icon = (Icon)resources.GetObject("_notifyIcon.Icon");
-            _notifyIcon.Text = "notifyIcon1";
+            _notifyIcon.Text = "RoboCopyMan";
             _notifyIcon.Visible = true;
+            _notifyIcon.DoubleClick += _notifyIcon_DoubleClick;
             // 
             // _contextMenuStrip
             // 
             _contextMenuStrip.ImageScalingSize = new Size(20, 20);
-            _contextMenuStrip.Items.AddRange(new ToolStripItem[] { exitToolStripMenuItem });
+            _contextMenuStrip.Items.AddRange(new ToolStripItem[] { showResultDialogToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
             _contextMenuStrip.Name = "_contextMenuStrip";
-            _contextMenuStrip.Size = new Size(103, 28);
+            _contextMenuStrip.Size = new Size(195, 54);
+            // 
+            // showResultDialogToolStripMenuItem
+            // 
+            showResultDialogToolStripMenuItem.Name = "showResultDialogToolStripMenuItem";
+            showResultDialogToolStripMenuItem.Size = new Size(194, 22);
+            showResultDialogToolStripMenuItem.Text = "結果ダイアログを開く(&V)...";
+            showResultDialogToolStripMenuItem.Click += showResultDialogToolStripMenuItem_Click;
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(191, 6);
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(102, 24);
-            exitToolStripMenuItem.Text = "Exit";
+            exitToolStripMenuItem.Size = new Size(194, 22);
+            exitToolStripMenuItem.Text = "終了(&E)";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
             // _timer
             // 
-            _timer.Enabled = true;
             _timer.Interval = 1000;
             _timer.Tick += _timer_Tick;
             // 
             // FormMain
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(310, 307);
+            ClientSize = new Size(280, 157);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "FormMain";
             Text = "Form1";
+            Load += FormMain_Load;
             _contextMenuStrip.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -81,5 +97,7 @@
         private ContextMenuStrip _contextMenuStrip;
         private ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.Timer _timer;
+        private ToolStripMenuItem showResultDialogToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator1;
     }
 }

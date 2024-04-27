@@ -7,9 +7,23 @@ namespace RoboCopyMan
 {
     internal static class Program
     {
+        /// <summary>
+        /// アプリケーションのフルネーム
+        /// </summary>
         private const string APPFULLNAME = "RoboCopyMan";
 
-        public static BackupManager BackupManager {  get; private set; }
+        /// <summary>
+        /// バックアップマネージャ
+        /// </summary>
+        private static BackupManager? _backupManager= null;
+        /// <summary>
+        /// バックアップマネージャ
+        /// </summary>
+        public static BackupManager BackupManager
+        {
+            get => _backupManager ?? throw new NullReferenceException("バックアップマネージャが初期化されていません.");
+        }
+        
 
         /// <summary>
         ///  The main entry point for the application.
@@ -46,34 +60,35 @@ namespace RoboCopyMan
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"An error occurred while setting up the logger. [{ex.Message}]");
+                    MessageBox.Show($"ロガーの初期化に失敗しました. [{ex.Message}]");
                     return;
                 }
 
-                Log.Information("Application is starting.");
+                Log.Information("アプリケーションを開始しました.");
 
                 // バックアップ設定の読み込み
                 try
                 {
-                    BackupManager = new(BackupManager.LoadSettings("settings"));
+                    _backupManager = new(BackupManager.LoadSettings("settings"));
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, "An error occurred while loading backup settings.");
+                    Log.Error(ex, "バックアップ設定の読み込みに失敗しました.");
                     return;
                 }
 
                 // To customize application configuration such as set high DPI settings or default font,
                 // see https://aka.ms/applicationconfiguration.
                 ApplicationConfiguration.Initialize();
-                new FormMain();
+
+                _ = new FormMain();
                 Application.Run();
 
-                Log.Information("Application is closing.");
+                Log.Information("アプリケーションを終了しました.");
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "An error occurred while running the application.");
+                Log.Error(ex, "アプリケーションはエラーで終了しました.");
             }
             finally
             {

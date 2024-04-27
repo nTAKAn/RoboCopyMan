@@ -8,20 +8,19 @@ namespace RoboCopyMan
 {
     internal class BackupTask
     {
-        private bool _initial = true;
+        private bool _initialBackup = true;
 
         public BackupSetting Setting { get; private init; }
-
         public DateTime NextTriggerTime { get; set; }
-
-        public bool IsInitial { get { return _initial; } private set { _initial = value; } }
+        public bool IsInitialBackup { get { return _initialBackup; } private set { _initialBackup = value; } }
         public Exception? LastException { get; set; } = null;
+        public DateTime LastBackupTime { get; set; } = DateTime.MinValue;
 
         public bool IsTimeToBackup
         {
             get
             {
-                if (IsInitial)
+                if (IsInitialBackup)
                     return true;
 
                 return DateTime.Now >= NextTriggerTime;
@@ -38,20 +37,23 @@ namespace RoboCopyMan
 
         public void UpdateNextTriggerTime()
         {
-            NextTriggerTime = DateTime.Now.AddMinutes(Setting.IntervalMinutes);
+            if (IsInitialBackup)
+            {
+                NextTriggerTime = DateTime.Now.AddMinutes(Setting.DelayMinutes);
+                IsInitialBackup = false;
+            }
+            else
+                NextTriggerTime = DateTime.Now.AddMinutes(Setting.IntervalMinutes);
         }
 
         public bool Execute(bool forced = false, bool updateNextTrigger = true)
         {
+            if (!IsTimeToBackup && !forced)
+                return false;
+
             try
             {
-                if (!IsInitial && !forced)
-                {
-                    if (!IsTimeToBackup)
-                        return false;
-                }
-
-                IsInitial = false;
+                LastBackupTime = DateTime.Now;
 
                 if (updateNextTrigger)
                     UpdateNextTriggerTime();
