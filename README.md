@@ -42,8 +42,9 @@
 
 - srcDir は、コピー元
 - dstDir は、コピー先
-- option は、オプション設定です。
-(例えば・・・"/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE")
+- option は、robocopy コマンドのオプションです。
+> 例えば、"/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE" は一般的に NAS にバックアップする際に使用するオプションです。
+> 詳細は、robocopy 本家のヘルプを参照してください。
 
 #### ログ設定 (logDir, logFilePrefix, logDatetimeFmt) は、任意です。コメントアウトすることでログ出力を無効化できます。
 - logDir は、ログの出力先になります。実際のログファイル名は、logFilePrefix に 日付(logDatetimeFmt) を付加したファイル名で保存されます。
