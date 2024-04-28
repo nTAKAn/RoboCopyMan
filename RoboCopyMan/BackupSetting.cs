@@ -30,7 +30,11 @@ namespace RoboCopyMan
         /// </summary>
         public string? LogDir { get; set; }
         /// <summary>
-        /// ログファイル名に使用する日付フォーマット (任意) (C#の日付フォーマットに準拠)
+        /// ログファイル名 (任意)
+        /// </summary>
+        public string? LogFilename { get; set; }
+        /// <summary>
+        /// ログファイル名に付加する日付フォーマット (任意) (C#の日付フォーマットに準拠)
         /// </summary>
         public string? LogDatetimeFmt { get; set; }
         /// <summary>
@@ -58,6 +62,7 @@ namespace RoboCopyMan
             Option = string.Empty;
 
             LogDir = null;
+            LogFilename = null;
             LogDatetimeFmt = null;
             XdFiles = null;
 
@@ -77,6 +82,7 @@ namespace RoboCopyMan
             Option = src.Option;
 
             LogDir = src.LogDir;
+            LogFilename = src.LogFilename;
             LogDatetimeFmt = src.LogDatetimeFmt;
             XdFiles = src.XdFiles;
 
@@ -100,12 +106,18 @@ namespace RoboCopyMan
             string option = (string)table["option"];
 
             string? logDir = null;
+            string? logFilename = null;
             string? logDatetimeFmt = null;
             string? xdFiles = null;
             if (table.ContainsKey("logDir"))
             {
                 logDir = (string)table["logDir"];
                 Debug.WriteLine($"Enable logDir: {logDir}");
+            }
+            if (table.ContainsKey("logFilename"))
+            {
+                logFilename = (string)table["logFilename"];
+                Debug.WriteLine($"Enable logFilename: {logFilename}");
             }
             if (table.ContainsKey("logDatetimeFmt"))
             {
@@ -129,6 +141,7 @@ namespace RoboCopyMan
                 Option = option,
 
                 LogDir = logDir,
+                LogFilename = logFilename,
                 LogDatetimeFmt = logDatetimeFmt,
                 XdFiles = xdFiles,
 

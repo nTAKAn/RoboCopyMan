@@ -15,7 +15,7 @@ namespace RoboCopyMan
         /// <summary>
         /// ログファイル名 (任意)
         /// </summary>
-        public string? LogFile { get; private init; } = null;
+        public string? LogFilename { get; private init; } = null;
         /// <summary>
         /// ログファイルパス (任意)
         /// </summary>
@@ -35,10 +35,10 @@ namespace RoboCopyMan
             Setting = new(setting);
 
             string logOption = string.Empty;
-            if ((Setting.LogDir is not null) && (Setting.LogDatetimeFmt is not null))
+            if ((Setting.LogDir is not null) && (setting.LogFilename is not null) && (Setting.LogDatetimeFmt is not null))
             {
-                LogFile = Path.GetFileName(Setting.DstDir);
-                LogFilePath = $"{Setting.LogDir}\\{LogFile}-" + DateTime.Now.ToString(setting.LogDatetimeFmt) + ".txt";
+                LogFilename = $"{Setting.LogFilename}{DateTime.Now.ToString(setting.LogDatetimeFmt)}.txt";
+                LogFilePath = Path.Join(Setting.LogDir, LogFilename);
 
                 logOption = $" /LOG:{LogFilePath}";
             }
