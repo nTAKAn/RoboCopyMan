@@ -1,6 +1,8 @@
 #pragma warning disable IDE1006 // 命名スタイル
 
 using Serilog;
+using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace RoboCopyMan
 {
@@ -21,7 +23,10 @@ namespace RoboCopyMan
             InitializeComponent();
 
             UpdateNotifyIcon();
+
             Program.BackupManager.BackupTaskExecuted += _backupManager_BackupTaskExecuted;
+            Program.BackupManager.BeginBackup += _backupManager_BeginBackupEventHandler;
+            Program.BackupManager.EndBackup += _backupManager_EndBackupEventHandler;
 
             _timer.Start();
         }
@@ -36,9 +41,22 @@ namespace RoboCopyMan
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void _timer_Tick(object sender, EventArgs e)
+        private async void _timer_Tick(object sender, EventArgs e)
         {
-            Program.BackupManager.Execute();
+            if (Program.BackupManager.IsExecuting)
+            {
+                Debug.WriteLine("バックアップ実行中のためポーリング処理でのバックアップをスキップします.");
+                return;
+            }
+
+            try
+            {
+                await Program.BackupManager.ExecuteAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "ポーリング処理でのバックアップに失敗しました.");
+            }
         }
 
         /// <summary>
@@ -50,23 +68,56 @@ namespace RoboCopyMan
         {
             UpdateNotifyIcon();
         }
+        /// <summary>
+        /// バックアップ開始時の処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void _backupManager_BeginBackupEventHandler(object sender, EventArgs e)
+        {
+            // バックアップ実行中はメニューを無効化
+            _contextMenuStrip.Enabled = false;
+
+            UpdateNotifyIcon();
+        }
+        /// <summary>
+        /// バックアップ終了時の処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void _backupManager_EndBackupEventHandler(object sender, EventArgs e)
+        {
+            // バックアップが終了したらメニューを有効化
+            _contextMenuStrip.Enabled = true;
+
+            UpdateNotifyIcon();
+        }
 
         /// <summary>
         /// タスクトレイの通知アイコン更新
         /// </summary>
         private void UpdateNotifyIcon()
         {
-            if (Program.BackupManager.IsErrorOccured)
+            // バックアップ実行中の場合
+            if (Program.BackupManager.IsExecuting)
             {
-                _notifyIcon.Icon = Properties.Resources.gosenzo_error;
-                _notifyIcon.Text = "RoboCopyMan (状態:異常)" +
-                    $"\n次回バックアップ {Program.BackupManager.NextBackupTime:HH:mm:ss}";
+                _notifyIcon.Icon = Properties.Resources.gosenzo_other;
+                _notifyIcon.Text = "RoboCopyMan (状態:バックアップ中)";
             }
             else
             {
-                _notifyIcon.Icon = Properties.Resources.gosenzo_ok;
-                _notifyIcon.Text = "RoboCopyMan (状態:正常)" +
-                    $"\n次回バックアップ {Program.BackupManager.NextBackupTime:HH:mm:ss}";
+                if (Program.BackupManager.IsErrorOccured)
+                {
+                    _notifyIcon.Icon = Properties.Resources.gosenzo_error;
+                    _notifyIcon.Text = "RoboCopyMan (状態:異常)" +
+                        $"\n次回バックアップ {Program.BackupManager.NextBackupTime:HH:mm:ss}";
+                }
+                else
+                {
+                    _notifyIcon.Icon = Properties.Resources.gosenzo_ok;
+                    _notifyIcon.Text = "RoboCopyMan (状態:正常)" +
+                        $"\n次回バックアップ {Program.BackupManager.NextBackupTime:HH:mm:ss}";
+                }
             }
         }
 
@@ -125,9 +176,22 @@ namespace RoboCopyMan
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void forcedBackupToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void forcedBackupToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Program.BackupManager.Execute(true);
+            if (Program.BackupManager.IsExecuting)
+            {
+                Debug.WriteLine("バックアップ実行中のため強制バックアップ（手動バックアップ）をスキップします.");
+                return;
+            }
+
+            try
+            {
+                await Program.BackupManager.ExecuteAsync(true);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "強制バックアップ（手動バックアップ）に失敗しました.");
+            }
         }
         /// <summary>
         /// メニュー：　このアプリについて
@@ -164,6 +228,10 @@ namespace RoboCopyMan
         /// </summary>
         private void ShowResultDialog()
         {
+            // バックアップ中である場合は何もしない
+            if (Program.BackupManager.IsExecuting)
+                return;
+
             // 既に表示されている場合はフォーカスを戻す
             if (_formResult != null)
             {

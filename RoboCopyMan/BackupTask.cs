@@ -6,6 +6,10 @@
     internal class BackupTask
     {
         /// <summary>
+        /// 非同期バックアップ防止用のセマフォ
+        /// </summary>
+        static readonly SemaphoreSlim _semaphore = new(1, 1);
+        /// <summary>
         /// 初回フラグ
         /// </summary>
         private bool _initialBackup = true;
@@ -36,6 +40,12 @@
         /// </summary>
         public DateTime LastBackupTime { get; private set; } = DateTime.MinValue;
 
+        /// <summary>
+        /// 非同期バックアップ中かを調べる
+        /// </summary>
+#pragma warning disable CA1822 // メンバーを static に設定します ← static にするとわかりにくいと思うので抑制
+        public bool IsExecuting { get => _semaphore.CurrentCount == 0; }
+#pragma warning restore CA1822 // メンバーを static に設定します
         /// <summary>
         /// バックアップ時間かどうかを調べる
         /// </summary>
@@ -87,6 +97,8 @@
             if (!IsTimeToBackup && !forced)
                 return false;
 
+            _semaphore.Wait(); // 非同期ではないのでフラグ代わり
+
             try
             {
                 LastBackupTime = DateTime.Now;
@@ -103,6 +115,10 @@
             {
                 LastException = ex;
                 throw;
+            }
+            finally
+            {
+                _semaphore.Release();
             }
         }
     }

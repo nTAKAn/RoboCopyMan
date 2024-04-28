@@ -89,5 +89,15 @@ namespace RoboCopyMan.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        /// <summary>
+        ///   (アイコン) に類似した型 System.Drawing.Icon のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Icon gosenzo_other {
+            get {
+                object obj = ResourceManager.GetObject("gosenzo-other", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }

@@ -8,10 +8,15 @@ namespace RoboCopyMan
     internal class BackupManager
     {
         /// <summary>
+        /// 非同期バックアップ防止用のセマフォ
+        /// </summary>
+        static readonly SemaphoreSlim _semaphore = new(1, 1);
+
+
+        /// <summary>
         /// バックアップタスクリスト
         /// </summary>
         public List<BackupTask> BackupTasks { get; private init; }
-
         /// <summary>
         /// エラーが発生しているかを調べる
         /// </summary>
@@ -28,7 +33,6 @@ namespace RoboCopyMan
                 return false;
             }
         }
-
         /// <summary>
         /// 次回バックアップ時間
         /// </summary>
@@ -46,11 +50,21 @@ namespace RoboCopyMan
                 return next;
             }
         }
-
+        /// <summary>
+        /// 非同期バックアップ中かを調べる
+        /// </summary>
+#pragma warning disable CA1822 // メンバーを static に設定します ← static にするとわかりにくいと思うので抑制
+        public bool IsExecuting { get => _semaphore.CurrentCount == 0; }
+#pragma warning restore CA1822 // メンバーを static に設定します
+        /// <summary>
+        /// バックアップ時間を超過しているバックアップタスクが存在するかを調べる
+        /// </summary>
+        public bool IsTimeToBackupTasks { get => BackupTasks.Any(task => task.IsTimeToBackup); }
         /// <summary>
         /// バックアップタスクの数
         /// </summary>
         public int TaskCount { get => BackupTasks.Count; }
+
 
         /// <summary>
         /// バックアップタスクが実行されたときに発生するイベント
@@ -62,8 +76,28 @@ namespace RoboCopyMan
         /// バックアップタスクが実行されたときに発生するイベント
         /// </summary>
         public event BackupTaskExecutedEventHandler? BackupTaskExecuted;
+        /// <summary>
+        /// バックアップ開始時に発生するイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public delegate void BeginBackupEventHandler(object sender, EventArgs e);
+        /// <summary>
+        /// バックアップ開始時に発生するイベント
+        /// </summary>
+        public event BeginBackupEventHandler? BeginBackup;
+        /// <summary>
+        /// バックアップ終了時に発生するイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public delegate void EndBackupEventHandler(object sender, EventArgs e);
+        /// <summary>
+        /// バックアップ終了時に発生するイベント
+        /// </summary>
+        public event EndBackupEventHandler? EndBackup;
 
-
+        
         /// <summary>
         /// コンストラクタ
         /// </summary>
@@ -136,5 +170,46 @@ namespace RoboCopyMan
             if (backupExecuted)
                 BackupTaskExecuted?.Invoke(this, EventArgs.Empty);
         }
+
+        /// <summary>
+        /// 非同期バックアップを実行する
+        /// </summary>
+        /// <param name="forced">true: 現在時刻に関わらず強制的にバックアップする, false 通常バックアップ</param>
+        /// <returns></returns>
+        public async Task ExecuteAsync(bool forced = false)
+        {
+            if (!_semaphore.Wait(0))
+                throw new BackupIsAlreadyRunningException();
+
+            // バックアップ開始イベントを発生させる
+            bool backupExecuted = false;
+            if (forced || IsTimeToBackupTasks)
+            {
+                BeginBackup?.Invoke(this, EventArgs.Empty);
+                backupExecuted = true;
+            }
+            
+            try
+            {
+                // HACK: キャンセルトークンを渡す処理を検討する
+                await Task.Run(() => Execute(forced));
+            }
+            finally
+            {
+                _semaphore.Release();
+
+                // バックアップ終了イベントを発生させる
+                if (backupExecuted)
+                    EndBackup?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    /// <summary>
+    /// バックアップが既に実行中の場合に発生する例外
+    /// </summary>
+    public class BackupIsAlreadyRunningException : Exception
+    {
+        public BackupIsAlreadyRunningException() : base("バックアップは既に実行中です.") { }
     }
 }
