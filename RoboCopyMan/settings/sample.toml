@@ -25,6 +25,8 @@ intervalMinutes = 60
 # 初回実行を遅らせるディレイ（分）
 delayMinutes = 5
 
-# 生成される robocopy のコマンド例
-# LogFilePath = {LogDir}\\{logFilename}{logDatetimeFmt}.txt
-# robocopy {SrcDir} {DstDir} {Option} /LOG:{LogFilePath} /XD {XdFiles}
+# sample.toml で生成される robocopy コマンド例
+#     LogFilePath = {LogDir}\\{logFilename}{logDatetimeFmt}.txt
+#     robocopy {SrcDir} {DstDir} {Option} /LOG:{LogFilePath} /XD {XdFiles}
+#
+# robocopy C:\folder D:\backup /MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE /LOG:D:\backup\logs\sample-20210101-123456.txt /XD "System Volume Information" "$RECYCLE.BIN"
