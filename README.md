@@ -34,9 +34,9 @@
 - バックアップ設定はバックアップごとに作ります（複数格納可能です）。
 > sample.toml は、誤動作防止のため読み込まれませんので、sample.toml 以外の名前である必要があります。
 
-変更するポイントは、title、srcDir、dstDir、logDir、logFilePrefix でよいかと思います。
-
 ## 設定ファイルの書き方
+
+変更するポイントは、title、srcDir、dstDir、logDir、logFilePrefix でよいかと思います。
 
 - title は、好きな名前をつけれます。
 
