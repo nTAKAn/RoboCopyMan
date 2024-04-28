@@ -131,7 +131,8 @@ namespace RoboCopyMan
             if (task is null)
                 return;
 
-            System.Diagnostics.Process.Start("explorer.exe", task.Setting.LogDir);
+            if (task.Setting.LogDir is not null)
+                Process.Start("explorer.exe", task.Setting.LogDir);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

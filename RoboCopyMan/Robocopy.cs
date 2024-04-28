@@ -13,13 +13,13 @@ namespace RoboCopyMan
         public BackupSetting Setting { get; private init; }
 
         /// <summary>
-        /// ログファイル名
+        /// ログファイル名 (任意)
         /// </summary>
-        public string LogFile { get; private init; }
+        public string? LogFile { get; private init; } = null;
         /// <summary>
-        /// ログファイルパス
+        /// ログファイルパス (任意)
         /// </summary>
-        public string LogFilePath { get; private init; }
+        public string? LogFilePath { get; private init; } = null;
         /// <summary>
         /// 実行コマンド
         /// </summary>
@@ -34,9 +34,20 @@ namespace RoboCopyMan
         {
             Setting = new(setting);
 
-            LogFile = Path.GetFileName(Setting.DstDir);
-            LogFilePath = $"{Setting.LogDir}\\{LogFile}-" + DateTime.Now.ToString(setting.LogDatetimeFmt) + ".txt";
-            Command = $"robocopy {Setting.SrcDir} {Setting.DstDir} /LOG:{LogFilePath} /XD {Setting.XdFiles} {Setting.Option}";
+            string logOption = string.Empty;
+            if ((Setting.LogDir is not null) && (Setting.LogDatetimeFmt is not null))
+            {
+                LogFile = Path.GetFileName(Setting.DstDir);
+                LogFilePath = $"{Setting.LogDir}\\{LogFile}-" + DateTime.Now.ToString(setting.LogDatetimeFmt) + ".txt";
+
+                logOption = $" /LOG:{LogFilePath}";
+            }
+
+            string xdFiles = string.Empty;
+            if (Setting.XdFiles is not null)
+                xdFiles = $" /XD {Setting.XdFiles}";
+
+            Command = $"robocopy {Setting.SrcDir} {Setting.DstDir} {Setting.Option}{logOption}{xdFiles}";
         }
 
         /// <summary>

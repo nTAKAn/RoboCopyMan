@@ -1,4 +1,5 @@
-﻿using Tomlyn;
+﻿using System.Diagnostics;
+using Tomlyn;
 
 namespace RoboCopyMan
 {
@@ -20,22 +21,22 @@ namespace RoboCopyMan
         /// </summary>
         public string DstDir { get; set; }
         /// <summary>
-        /// ログファイルの出力先ディレクトリ
-        /// </summary>
-        public string LogDir { get; set; }
-        /// <summary>
-        /// ログファイル名に使用する日付フォーマット (C#の日付フォーマットに準拠)
-        /// </summary>
-        public string LogDatetimeFmt { get; set; }
-
-        /// <summary>
-        /// 除外するファイル・ディレクトリ
-        /// </summary>
-        public string XdFiles { get; set; }
-        /// <summary>
         /// robocopy のオプション
         /// </summary>
         public string Option { get; set; }
+
+        /// <summary>
+        /// ログファイルの出力先ディレクトリ (任意)
+        /// </summary>
+        public string? LogDir { get; set; }
+        /// <summary>
+        /// ログファイル名に使用する日付フォーマット (任意) (C#の日付フォーマットに準拠)
+        /// </summary>
+        public string? LogDatetimeFmt { get; set; }
+        /// <summary>
+        /// 除外するファイル・ディレクトリ (任意)
+        /// </summary>
+        public string? XdFiles { get; set; }
 
         /// <summary>
         /// バックアップ間隔（分）
@@ -54,11 +55,11 @@ namespace RoboCopyMan
             Title = string.Empty;
             SrcDir = string.Empty;
             DstDir = string.Empty;
-            LogDir = string.Empty;
-            LogDatetimeFmt = string.Empty;
-
             Option = string.Empty;
-            XdFiles = string.Empty;
+
+            LogDir = null;
+            LogDatetimeFmt = null;
+            XdFiles = null;
 
             IntervalMinutes = -1;
             DelayMinutes = -1;
@@ -73,11 +74,11 @@ namespace RoboCopyMan
             Title = src.Title;
             SrcDir = src.SrcDir;
             DstDir = src.DstDir;
+            Option = src.Option;
+
             LogDir = src.LogDir;
             LogDatetimeFmt = src.LogDatetimeFmt;
-
             XdFiles = src.XdFiles;
-            Option = src.Option;
 
             IntervalMinutes = src.IntervalMinutes;
             DelayMinutes = src.DelayMinutes;
@@ -96,11 +97,26 @@ namespace RoboCopyMan
             var title = (string)table["title"];
             var srcDir = (string)table["srcDir"];
             var dstDir = (string)table["dstDir"];
-            var logDir = (string)table["logDir"];
-            var logDatetimeFmt = (string)table["logDatetimeFmt"];
-
-            string xdFiles = (string)table["xdFiles"];
             string option = (string)table["option"];
+
+            string? logDir = null;
+            string? logDatetimeFmt = null;
+            string? xdFiles = null;
+            if (table.ContainsKey("logDir"))
+            {
+                logDir = (string)table["logDir"];
+                Debug.WriteLine($"Enable logDir: {logDir}");
+            }
+            if (table.ContainsKey("logDatetimeFmt"))
+            {
+                logDatetimeFmt = (string)table["logDatetimeFmt"];
+                Debug.WriteLine($"Enable logDatetimeFmt: {logDatetimeFmt}");
+            }
+            if (table.ContainsKey("xdFiles"))
+            {
+                xdFiles = (string)table["xdFiles"];
+                Debug.WriteLine($"Enable xdFiles: {xdFiles}");
+            }
 
             var intervalMin = (long)table["intervalMinutes"];
             var delayMin = (long)table["delayMinutes"];
@@ -110,11 +126,11 @@ namespace RoboCopyMan
                 Title = title,
                 SrcDir = srcDir,
                 DstDir = dstDir,
+                Option = option,
+
                 LogDir = logDir,
                 LogDatetimeFmt = logDatetimeFmt,
-
                 XdFiles = xdFiles,
-                Option = option,
 
                 IntervalMinutes = intervalMin,
                 DelayMinutes = delayMin,
