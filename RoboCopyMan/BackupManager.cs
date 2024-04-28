@@ -8,6 +8,11 @@ namespace RoboCopyMan
     internal class BackupManager
     {
         /// <summary>
+        /// サンプル設定ファイル名
+        /// </summary>
+        private static readonly string _SAMPLE_SETTING_FILE = "sample.toml";
+
+        /// <summary>
         /// 非同期バックアップ防止用のセマフォ
         /// </summary>
         static readonly SemaphoreSlim _semaphore = new(1, 1);
@@ -125,6 +130,9 @@ namespace RoboCopyMan
             foreach (var filepath in filepaths)
             {
                 if (Path.GetExtension(filepath) != ".toml")
+                    continue;
+
+                if (Path.GetFileName(filepath) == _SAMPLE_SETTING_FILE)
                     continue;
 
                 try

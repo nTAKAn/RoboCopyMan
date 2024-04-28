@@ -61,6 +61,11 @@
         }
 
         /// <summary>
+        /// robocopy 実行時の標準出力を取得する
+        /// </summary>
+        public string StdOutput { get; private set; } = string.Empty;
+
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="setting">バックアップ設定</param>
@@ -108,11 +113,13 @@
 
                 Robocopy robocopy = new(Setting);
                 robocopy.Execute();
+                StdOutput = robocopy.StdOutput; 
 
                 return true;
             }
             catch (Exception ex)
             {
+                StdOutput = string.Empty;
                 LastException = ex;
                 throw;
             }

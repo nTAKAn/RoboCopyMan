@@ -122,11 +122,10 @@ namespace RoboCopyMan
         }
 
         /// <summary>
-        /// メニュー：　終了
+        /// アプリケーションを終了する
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        /// <param name="restart">true: 再起動する</param>
+        private void AppExit(bool restart)
         {
             try
             {
@@ -158,8 +157,22 @@ namespace RoboCopyMan
             finally
             {
                 Close();
-                Application.Exit();
+
+                if (restart)
+                    Application.Restart();
+                else
+                    Application.Exit();
             }
+        }
+
+        /// <summary>
+        /// メニュー：　終了
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AppExit(false);
         }
         /// <summary>
         /// メニュー：　再起動
@@ -168,8 +181,10 @@ namespace RoboCopyMan
         /// <param name="e"></param>
         private void restartToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("再起動しますか？", Program.APPFULLNAME, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                Application.Restart();
+            if (MessageBox.Show("再起動しますか？", Program.APPFULLNAME, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+            AppExit(true);
         }
 
         /// <summary>

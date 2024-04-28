@@ -1,0 +1,4 @@
+﻿# デバッグ用の設定ファイルを除外
+dropbox-works.toml
+x-drive.toml
+y-drive.toml

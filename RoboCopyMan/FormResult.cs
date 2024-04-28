@@ -91,6 +91,8 @@ namespace RoboCopyMan
             {
                 Text = _TITLE;
                 _listView.Enabled = true;
+
+                UpdateResultList();
             });
         }
 
@@ -111,7 +113,11 @@ namespace RoboCopyMan
                 _listView.Items.Add(item);
             }
         }
-
+        /// <summary>
+        /// 結果リストの選択が変更されたときの処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void _listView_SelectedIndexChanged(object sender, EventArgs e)
         {
             var task = SelectedTask;
@@ -119,11 +125,16 @@ namespace RoboCopyMan
             {
                 _toolStripStatusLabel_SrcDir.Text = "コピー元：　";
                 _toolStripStatusLabel_DstDir.Text = "コピー先：　";
+
+                _textBox_stdOut.Text = string.Empty;
                 return;
             }
 
             _toolStripStatusLabel_SrcDir.Text = $"コピー元：　{task.Setting.SrcDir}";
             _toolStripStatusLabel_DstDir.Text = $"コピー先：　{task.Setting.DstDir}";
+
+            // robocopy の標準出力を表示
+            _textBox_stdOut.Text = task.StdOutput;
         }
         private void _listView_MouseDoubleClick(object sender, MouseEventArgs e)
         {

@@ -43,8 +43,14 @@
             columnHeader_lastBackupTime = new ColumnHeader();
             columnHeader_nextBackupTime = new ColumnHeader();
             columnHeader_result = new ColumnHeader();
+            _splitContainer = new SplitContainer();
+            _textBox_stdOut = new TextBox();
             _menuStrip.SuspendLayout();
             _statusStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)_splitContainer).BeginInit();
+            _splitContainer.Panel1.SuspendLayout();
+            _splitContainer.Panel2.SuspendLayout();
+            _splitContainer.SuspendLayout();
             SuspendLayout();
             // 
             // _menuStrip
@@ -94,7 +100,7 @@
             // _statusStrip
             // 
             _statusStrip.Items.AddRange(new ToolStripItem[] { _toolStripStatusLabel_SrcDir, _toolStripStatusLabel_DstDir });
-            _statusStrip.Location = new Point(0, 192);
+            _statusStrip.Location = new Point(0, 454);
             _statusStrip.Name = "_statusStrip";
             _statusStrip.Size = new Size(627, 22);
             _statusStrip.TabIndex = 4;
@@ -119,9 +125,9 @@
             _listView.FullRowSelect = true;
             _listView.GridLines = true;
             _listView.HideSelection = true;
-            _listView.Location = new Point(0, 24);
+            _listView.Location = new Point(0, 0);
             _listView.Name = "_listView";
-            _listView.Size = new Size(627, 168);
+            _listView.Size = new Size(627, 180);
             _listView.TabIndex = 5;
             _listView.UseCompatibleStateImageBehavior = false;
             _listView.View = View.Details;
@@ -148,12 +154,43 @@
             columnHeader_result.Text = "状態";
             columnHeader_result.Width = 200;
             // 
+            // _splitContainer
+            // 
+            _splitContainer.Dock = DockStyle.Fill;
+            _splitContainer.FixedPanel = FixedPanel.Panel1;
+            _splitContainer.Location = new Point(0, 24);
+            _splitContainer.Name = "_splitContainer";
+            _splitContainer.Orientation = Orientation.Horizontal;
+            // 
+            // _splitContainer.Panel1
+            // 
+            _splitContainer.Panel1.Controls.Add(_listView);
+            // 
+            // _splitContainer.Panel2
+            // 
+            _splitContainer.Panel2.Controls.Add(_textBox_stdOut);
+            _splitContainer.Size = new Size(627, 430);
+            _splitContainer.SplitterDistance = 180;
+            _splitContainer.TabIndex = 6;
+            // 
+            // _textBox_stdOut
+            // 
+            _textBox_stdOut.Dock = DockStyle.Fill;
+            _textBox_stdOut.Location = new Point(0, 0);
+            _textBox_stdOut.Multiline = true;
+            _textBox_stdOut.Name = "_textBox_stdOut";
+            _textBox_stdOut.ReadOnly = true;
+            _textBox_stdOut.ScrollBars = ScrollBars.Both;
+            _textBox_stdOut.Size = new Size(627, 246);
+            _textBox_stdOut.TabIndex = 0;
+            _textBox_stdOut.WordWrap = false;
+            // 
             // FormResult
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(627, 214);
-            Controls.Add(_listView);
+            ClientSize = new Size(627, 476);
+            Controls.Add(_splitContainer);
             Controls.Add(_statusStrip);
             Controls.Add(_menuStrip);
             Icon = (Icon)resources.GetObject("$this.Icon");
@@ -168,6 +205,11 @@
             _menuStrip.PerformLayout();
             _statusStrip.ResumeLayout(false);
             _statusStrip.PerformLayout();
+            _splitContainer.Panel1.ResumeLayout(false);
+            _splitContainer.Panel2.ResumeLayout(false);
+            _splitContainer.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)_splitContainer).EndInit();
+            _splitContainer.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -188,5 +230,7 @@
         private ToolStripMenuItem toolToolStripMenuItem;
         private ToolStripMenuItem makeCommandToolStripMenuItem;
         private ToolStripMenuItem editSettingFileToolStripMenuItem;
+        private SplitContainer _splitContainer;
+        private TextBox _textBox_stdOut;
     }
 }

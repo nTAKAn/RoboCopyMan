@@ -30,9 +30,9 @@ namespace RoboCopyMan
         /// </summary>
         public string? LogDir { get; set; }
         /// <summary>
-        /// ログファイル名 (任意)
+        /// ログファイル名のプレフィックス (任意)
         /// </summary>
-        public string? LogFilename { get; set; }
+        public string? LogFilePrefix { get; set; }
         /// <summary>
         /// ログファイル名に付加する日付フォーマット (任意) (C#の日付フォーマットに準拠)
         /// </summary>
@@ -62,7 +62,7 @@ namespace RoboCopyMan
             Option = string.Empty;
 
             LogDir = null;
-            LogFilename = null;
+            LogFilePrefix = null;
             LogDatetimeFmt = null;
             XdFiles = null;
 
@@ -82,12 +82,34 @@ namespace RoboCopyMan
             Option = src.Option;
 
             LogDir = src.LogDir;
-            LogFilename = src.LogFilename;
+            LogFilePrefix = src.LogFilePrefix;
             LogDatetimeFmt = src.LogDatetimeFmt;
             XdFiles = src.XdFiles;
 
             IntervalMinutes = src.IntervalMinutes;
             DelayMinutes = src.DelayMinutes;
+        }
+
+        public string MakeCommand(DateTime logTime, out string? logFilePath, out string? logFilename)
+        {
+            logFilePath = null;
+            logFilename = null;
+
+            string logOption = string.Empty;
+            if ((LogDir is not null) && (LogFilePrefix is not null) && (LogDatetimeFmt is not null))
+            {
+                logFilename = $"{LogFilePrefix}{logTime.ToString(LogDatetimeFmt)}.txt";
+                logFilePath = Path.Join(LogDir, logFilename);
+
+                logOption = $" /LOG:{logFilePath}";
+            }
+
+            string xdFiles = string.Empty;
+            if (XdFiles is not null)
+                xdFiles = $" /XD {XdFiles}";
+
+            var command = $"robocopy {SrcDir} {DstDir} {Option}{logOption}{xdFiles}";
+            return command;
         }
 
         /// <summary>
@@ -106,7 +128,7 @@ namespace RoboCopyMan
             string option = (string)table["option"];
 
             string? logDir = null;
-            string? logFilename = null;
+            string? logFilePrefix = null;
             string? logDatetimeFmt = null;
             string? xdFiles = null;
             if (table.ContainsKey("logDir"))
@@ -114,10 +136,10 @@ namespace RoboCopyMan
                 logDir = (string)table["logDir"];
                 Debug.WriteLine($"Enable logDir: {logDir}");
             }
-            if (table.ContainsKey("logFilename"))
+            if (table.ContainsKey("logFilePrefix"))
             {
-                logFilename = (string)table["logFilename"];
-                Debug.WriteLine($"Enable logFilename: {logFilename}");
+                logFilePrefix = (string)table["logFilePrefix"];
+                Debug.WriteLine($"Enable logFilename: {logFilePrefix}");
             }
             if (table.ContainsKey("logDatetimeFmt"))
             {
@@ -141,7 +163,7 @@ namespace RoboCopyMan
                 Option = option,
 
                 LogDir = logDir,
-                LogFilename = logFilename,
+                LogFilePrefix = logFilePrefix,
                 LogDatetimeFmt = logDatetimeFmt,
                 XdFiles = xdFiles,
 

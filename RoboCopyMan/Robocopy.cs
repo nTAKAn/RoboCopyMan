@@ -17,13 +17,13 @@ namespace RoboCopyMan
         /// </summary>
         public string? LogFilename { get; private init; } = null;
         /// <summary>
-        /// ログファイルパス (任意)
-        /// </summary>
-        public string? LogFilePath { get; private init; } = null;
-        /// <summary>
         /// 実行コマンド
         /// </summary>
         public string Command { get; private set; }
+        /// <summary>
+        /// robocopy 実行時の標準出力
+        /// </summary>
+        public string StdOutput { get; private set; } = string.Empty;
 
 
         /// <summary>
@@ -34,20 +34,8 @@ namespace RoboCopyMan
         {
             Setting = new(setting);
 
-            string logOption = string.Empty;
-            if ((Setting.LogDir is not null) && (setting.LogFilename is not null) && (Setting.LogDatetimeFmt is not null))
-            {
-                LogFilename = $"{Setting.LogFilename}{DateTime.Now.ToString(setting.LogDatetimeFmt)}.txt";
-                LogFilePath = Path.Join(Setting.LogDir, LogFilename);
-
-                logOption = $" /LOG:{LogFilePath}";
-            }
-
-            string xdFiles = string.Empty;
-            if (Setting.XdFiles is not null)
-                xdFiles = $" /XD {Setting.XdFiles}";
-
-            Command = $"robocopy {Setting.SrcDir} {Setting.DstDir} {Setting.Option}{logOption}{xdFiles}";
+            Command = Setting.MakeCommand(DateTime.Now, out var logFilename, out var _);
+            LogFilename = logFilename;
         }
 
         /// <summary>
@@ -57,6 +45,8 @@ namespace RoboCopyMan
         /// <exception cref="Exception"></exception>
         public string Execute()
         {
+            StdOutput = string.Empty;
+
             ProcessStartInfo psInfo = new()
             {
                 FileName = "cmd",
@@ -69,14 +59,13 @@ namespace RoboCopyMan
             using Process process = Process.Start(psInfo) ?? throw new Exception();
 
             // 標準出力を全て取得。
-            string res = process.StandardOutput.ReadToEnd();
+            StdOutput = process.StandardOutput.ReadToEnd();
 
             process.WaitForExit();
             process.Close();
 
-            Debug.WriteLine(res);
-
-            return res;
+            Debug.WriteLine(StdOutput);
+            return StdOutput;
         }
     }
 }
