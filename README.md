@@ -43,7 +43,8 @@
 > TOML で `\` を記述するには `\\` というように記述してください。
 - dstDir は、コピー先
 - option は、robocopy コマンドのオプションです。
-> 例えば、"/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE" は一般的に NAS にバックアップする際に使用するオプションです。
+> 例えば・・・`"/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE"` は一般的に NAS にバックアップする際に使用するオプションです。
+> 
 > 詳細は、robocopy 本家のヘルプを参照してください。
 
 #### ログ設定 (logDir, logFilePrefix, logDatetimeFmt) は、任意です。コメントアウトすることでログ出力を無効化できます。
@@ -54,6 +55,7 @@
 #### 除外ファイル設定 (xdFiles) は、任意です。コメントアウトすることで除外ファイルを無効化できます。
 - xdFiles は、除外するディレクトリです。
 > 例えば・・・ `"\"System Volume Information\" \"$RECYCLE.BIN\""`
+> 
 > TOML でダブルクォーテーションを記述するには `\"` というように '\' を付加してください。
 
 #### バックアップ間隔設定
