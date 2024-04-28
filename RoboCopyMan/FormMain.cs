@@ -152,7 +152,7 @@ namespace RoboCopyMan
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, Program.APPFULLNAME, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Log.Error(ex, "終了処理でエラーが発生しました.");
             }
             finally
@@ -160,6 +160,16 @@ namespace RoboCopyMan
                 Close();
                 Application.Exit();
             }
+        }
+        /// <summary>
+        /// メニュー：　再起動
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void restartToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("再起動しますか？", Program.APPFULLNAME, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                Application.Restart();
         }
 
         /// <summary>
@@ -266,5 +276,6 @@ namespace RoboCopyMan
             _formAbout = null;
         }
 
+        
     }
 }

@@ -9,7 +9,7 @@ namespace RoboCopyMan
         /// <summary>
         /// アプリケーションのフルネーム
         /// </summary>
-        private const string APPFULLNAME = "RoboCopyMan";
+        public const string APPFULLNAME = "RoboCopyMan";
 
         /// <summary>
         /// バックアップマネージャ
@@ -59,7 +59,7 @@ namespace RoboCopyMan
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"ロガーの初期化に失敗しました. [{ex.Message}]");
+                    MessageBox.Show($"ロガーの初期化に失敗しました. \n[{ex.Message}]", Program.APPFULLNAME, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 

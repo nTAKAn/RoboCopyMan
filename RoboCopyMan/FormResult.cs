@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Serilog;
+using System.Diagnostics;
 
 #pragma warning disable IDE1006 // 命名スタイル
 
@@ -156,7 +157,8 @@ namespace RoboCopyMan
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Error(ex, "設定ファイルの編集に失敗しました.");
+                return;
             }
         }
     }
