@@ -36,24 +36,25 @@
 
 ## 設定ファイルの書き方
 
-変更するポイントは、title、srcDir、dstDir、logDir、logFilePrefix でよいかと思います。
+必須項目は、title、srcDir、dstDir、option とバックアップ間隔設定です。
 
 - title は、好きな名前をつけれます。
-
 - srcDir は、コピー元
+> TOML で `\` を記述するには `\\` というように記述してください。
 - dstDir は、コピー先
 - option は、robocopy コマンドのオプションです。
 > 例えば、"/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE" は一般的に NAS にバックアップする際に使用するオプションです。
 > 詳細は、robocopy 本家のヘルプを参照してください。
 
 #### ログ設定 (logDir, logFilePrefix, logDatetimeFmt) は、任意です。コメントアウトすることでログ出力を無効化できます。
-- logDir は、ログの出力先になります。実際のログファイル名は、logFilePrefix に 日付(logDatetimeFmt) を付加したファイル名で保存されます。
-- logFilePrefix は、ログファイル名のプレフィックスです。
-- logDatetimeFmt は、ログファイルの日付フォーマットです。C#の日付フォーマットに準拠しています。
+- logDir： ログの出力先になります。実際のログファイル名は、logFilePrefix に 日付(logDatetimeFmt) を付加したファイル名で保存されます。
+- logFilePrefix： ログファイル名のプレフィックスです。
+- logDatetimeFmt： ログファイルの日付フォーマットです。C#の日付フォーマットに準拠しています。
 
 #### 除外ファイル設定 (xdFiles) は、任意です。コメントアウトすることで除外ファイルを無効化できます。
 - xdFiles は、除外するディレクトリです。
-(例えば・・・ "\"System Volume Information\" \"$RECYCLE.BIN\"")
+> 例えば・・・ `"\"System Volume Information\" \"$RECYCLE.BIN\""`
+> TOML でダブルクォーテーションを記述するには `\"` というように '\' を付加してください。
 
 #### バックアップ間隔設定
 - intervalMinutes は、バックアップの実行間隔で、この時間ごとに robocopy 実行されます。
@@ -61,7 +62,6 @@
 （例えば、ネットワークドライブの接続をまつなど）
 
 > あえてログ設定、除外ファイル設定をコメントアウトして、option に必要な設定（ログ、除外ファイル設定）を自分で書くこともできます。
-
 
 ### 設定ファイル例
 ```
