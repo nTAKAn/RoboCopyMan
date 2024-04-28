@@ -41,7 +41,7 @@
             _label_title.Name = "_label_title";
             _label_title.Size = new Size(178, 15);
             _label_title.TabIndex = 0;
-            _label_title.Text = "RoboCopyMan Ver 1.0.0-beta.3.0";
+            _label_title.Text = "RoboCopyMan Ver 1.0.0-beta.5.0";
             // 
             // _label_copyright
             // 
