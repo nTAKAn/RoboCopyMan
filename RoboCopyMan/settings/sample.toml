@@ -10,17 +10,15 @@ dstDir = "D:\\backup"
 # robocopy のオプション
 option = "/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE"
 
-# ログファイルの出力先ディレクトリ 
-# (このオプションは任意： コメントアウトすることで無効化（/LOG オプションを付加しない）
-logDir = "D:\\backup\\logs"
+# ログファイルの出力先ディレクトリ (このオプションは任意： コメントアウトすることで無効化（/LOG オプションを付加しない）
+# logDir = "D:\\backup\\logs"
 # ログファイル名のプレフィックス
-logFilePrefix = "sample-"
+# logFilePrefix = "sample-"
 # ログファイル名のプレフィックスに付加する日付フォーマット (C#の日付フォーマットに準拠)
-logDatetimeFmt = "yyyyMMdd-HHmmdd"
+# logDatetimeFmt = "yyyyMMdd-HHmmdd"
 
-# 除外するファイル・ディレクトリ
-# (このオプションは任意： コメントアウトすることで無効化（/XD オプションを付加しない）
-xdFiles = "\"System Volume Information\" \"$RECYCLE.BIN\""
+# 除外するファイル・ディレクトリ (このオプションは任意： コメントアウトすることで無効化（/XD オプションを付加しない）
+# xdFiles = "\"System Volume Information\" \"$RECYCLE.BIN\""
 
 # バックアップ間隔（分）
 intervalMinutes = 60
