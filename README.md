@@ -43,7 +43,7 @@
 > TOML で `\` を記述するには `\\` と記述してください。
 - dstDir は、コピー先
 - option は、robocopy コマンドのオプションです。
-> 例えば・・・`"/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE"` は一般的に NAS にバックアップする際に使用するオプションです。
+> 例えば・・・`"/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE"` は、NAS にバックアップする際に使用する際の一般的なオプションです。
 > 
 > 詳細は、robocopy 本家のヘルプを参照してください。
 
