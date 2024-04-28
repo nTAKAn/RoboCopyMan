@@ -11,11 +11,11 @@
 その他あるかもしれないのですが、結局よくわからないのでこのソフトを作りました。
 
 > ちなみに、RoboCopyScheduler というフリーソフトがあるのですが、それが私の環境ではうまく使えなかったんですよね・・・
-> RoboCopyScheduler がうまく使える方はそちらを使用した方がよいです。RoboCopyScheduler の方が機能が豊富です。
+> RoboCopyScheduler がうまく使える方は、RoboCopyScheduler の方が高機能ですのでそちらを使用した方がよいです。
 
 ## インストール、アンインストール
 
-- 実行ファイル RoboCopyMan.exe を実行すれば OK です。
+- ダウンロードご展開したフォルダにある実行ファイル RoboCopyMan.exe を実行すれば OK です。
 - レジストリは使用していないので、フォルダごと削除で OK です。
 
 ## 注意
@@ -29,11 +29,12 @@
 - settings フォルダの中に、バックアップ設定を書き込んだ toml ファイルを格納しておきます。
 
 - sample.toml が入ってますが、これはサンプルファイルです。
-- このファイルをコピーして、任意の名前で保存してください。
+> このファイルをコピーして、任意の名前で保存してください。
+
 - バックアップ設定はバックアップごとに作ります（複数格納可能です）。
 > sample.toml は、誤動作防止のため読み込まれませんので、sample.toml 以外の名前である必要があります。
 
-変更するポイントは、title、srcDir、dstDir、logDir、logFilename でよいかと思います。
+変更するポイントは、title、srcDir、dstDir、logDir、logFilePrefix でよいかと思います。
 
 ## 設定ファイルの書き方
 
@@ -44,9 +45,9 @@
 - option は、オプション設定です。
 (例えば・・・"/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE")
 
-#### ログ設定 (logDir, logFilename, logDatetimeFmt) は、任意です。コメントアウトすることでログ出力を無効化できます。
-- logDir は、ログの出力先になります。実際のログファイル名は、logFilename に 日付(logDatetimeFmt) を付加したファイル名で保存されます。
-- logFilename は、ログファイル名のプレフィックスです。
+#### ログ設定 (logDir, logFilePrefix, logDatetimeFmt) は、任意です。コメントアウトすることでログ出力を無効化できます。
+- logDir は、ログの出力先になります。実際のログファイル名は、logFilePrefix に 日付(logDatetimeFmt) を付加したファイル名で保存されます。
+- logFilePrefix は、ログファイル名のプレフィックスです。
 - logDatetimeFmt は、ログファイルの日付フォーマットです。C#の日付フォーマットに準拠しています。
 
 #### 除外ファイル設定 (xdFiles) は、任意です。コメントアウトすることで除外ファイルを無効化できます。
