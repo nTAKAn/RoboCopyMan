@@ -145,7 +145,7 @@
             // 
             // columnHeader_result
             // 
-            columnHeader_result.Text = "結果";
+            columnHeader_result.Text = "状態";
             columnHeader_result.Width = 200;
             // 
             // FormResult

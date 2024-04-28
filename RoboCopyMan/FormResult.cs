@@ -7,6 +7,15 @@ namespace RoboCopyMan
 {
     public partial class FormResult : Form
     {
+        /// <summary>
+        /// 通常時のタイトル
+        /// </summary>
+        private static readonly string _TITLE = "バックアップ結果";
+        /// <summary>
+        /// 実行中のタイトル
+        /// </summary>
+        private static readonly string _EXECUTE_TITLE = "バックアップ結果 (実行中)";
+
         // リストビューで選択されているタスクを取得する
         private BackupTask? SelectedTask
         {
@@ -33,6 +42,8 @@ namespace RoboCopyMan
             Program.BackupManager.BackupTaskExecuted += _backupManager_BackupTaskExecuted;
             Program.BackupManager.BeginBackup += _backupManager_BeginBackupEventHandler;
             Program.BackupManager.EndBackup += _backupManager_EndBackupEventHandler;
+
+            Text = _TITLE;
         }
 
         private void FormResult_FormClosing(object sender, FormClosingEventArgs e)
@@ -63,7 +74,11 @@ namespace RoboCopyMan
         /// <param name="e"></param>
         public void _backupManager_BeginBackupEventHandler(object sender, EventArgs e)
         {
-            Invoke(() => _listView.Enabled = false);
+            Invoke(() =>
+            {
+                Text = _EXECUTE_TITLE;
+                _listView.Enabled = false;
+            });
         }
         /// <summary>
         /// バックアップ終了時の処理
@@ -72,7 +87,11 @@ namespace RoboCopyMan
         /// <param name="e"></param>
         public void _backupManager_EndBackupEventHandler(object sender, EventArgs e)
         {
-            Invoke(() => _listView.Enabled = true);
+            Invoke(() =>
+            {
+                Text = _TITLE;
+                _listView.Enabled = true;
+            });
         }
 
         /// <summary>
