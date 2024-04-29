@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using System.Diagnostics;
 
 namespace RoboCopyMan
 {
@@ -32,6 +33,9 @@ namespace RoboCopyMan
                 foreach (var task in BackupTasks)
                 {
                     if (task.LastException != null)
+                        return true;
+
+                    if (!task.IsSuccessful)
                         return true;
                 }
 
@@ -143,12 +147,14 @@ namespace RoboCopyMan
                 catch (Exception ex)
                 {
                     // 読み込めない場合でもログを残して継続する
-                    Log.Error(ex, $"設定ファイルの読み込み中に例外が発生しました. {filepath}");
+                    SerilogWrapper.Error(ex, $"設定ファイルの読み込み中に例外が発生しました. {filepath}");
                 }
             }
 
             return settings;
         }
+
+        
 
         /// <summary>
         /// バックアップを実行する
@@ -164,14 +170,14 @@ namespace RoboCopyMan
                 {
                     if (task.Execute(forced))
                     {
-                        Log.Information($"{task.Setting.Title}: バックアップを実行しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
-                        Log.Information($"{task.Setting.Title}: 次回バックアップ時間: {task.NextTriggerTime}");
+                        SerilogWrapper.Information($"{task.Setting.Title}: バックアップを実行しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
+                        SerilogWrapper.Information($"{task.Setting.Title}: 次回バックアップ時間: {task.NextTriggerTime}");
                         backupExecuted = true;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, $"{task.Setting.Title}: バックアップ中に例外が発生しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
+                    SerilogWrapper.Error(ex, $"{task.Setting.Title}: バックアップ中に例外が発生しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
                 }
             }
 

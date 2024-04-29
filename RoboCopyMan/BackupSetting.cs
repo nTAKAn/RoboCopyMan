@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Data;
+using System.Diagnostics;
 using Tomlyn;
 
 namespace RoboCopyMan
@@ -38,9 +39,26 @@ namespace RoboCopyMan
         /// </summary>
         public string? LogDatetimeFmt { get; set; }
         /// <summary>
-        /// 除外するファイル・ディレクトリ (任意)
+        /// 除外するディレクトリ (任意)
         /// </summary>
-        public string? XdFiles { get; set; }
+        public string? XdDirs { get; set; }
+        /// <summary>
+        /// 除外するファイル (任意)
+        /// </summary>
+        public string? XfFiles { get; set; }
+        /// <summary>
+        /// テストモード
+        /// </summary>
+        public bool TestMode { get; set; }
+
+        /// <summary>
+        /// バックアップ前に実行するコマンド
+        /// </summary>
+        public string? Precoomand { get; set; }
+        /// <summary>
+        /// バックアップ後に実行するコマンド
+        /// </summary>
+        public string? Postcommand { get; set; }
 
         /// <summary>
         /// バックアップ間隔（分）
@@ -64,7 +82,12 @@ namespace RoboCopyMan
             LogDir = null;
             LogFilePrefix = null;
             LogDatetimeFmt = null;
-            XdFiles = null;
+            XdDirs = null;
+            XfFiles = null;
+            TestMode = false;
+
+            Precoomand = null;
+            Postcommand = null;
 
             IntervalMinutes = -1;
             DelayMinutes = -1;
@@ -84,31 +107,56 @@ namespace RoboCopyMan
             LogDir = src.LogDir;
             LogFilePrefix = src.LogFilePrefix;
             LogDatetimeFmt = src.LogDatetimeFmt;
-            XdFiles = src.XdFiles;
+            XdDirs = src.XdDirs;
+            XfFiles = src.XfFiles;
+            TestMode = src.TestMode;
+
+            Precoomand = src.Precoomand;
+            Postcommand = src.Postcommand;
 
             IntervalMinutes = src.IntervalMinutes;
             DelayMinutes = src.DelayMinutes;
         }
 
+        /// <summary>
+        /// robocopy のコマンドを生成する
+        /// </summary>
+        /// <param name="logTime">ログファイルに使用する時刻</param>
+        /// <param name="logFilePath">生成したログファイルパス</param>
+        /// <param name="logFilename">生成したログファイル名</param>
+        /// <returns></returns>
         public string MakeCommand(DateTime logTime, out string? logFilePath, out string? logFilename)
         {
             logFilePath = null;
             logFilename = null;
+            string options = string.Empty;
 
-            string logOption = string.Empty;
+            if (TestMode)
+                options += "/L ";
+
+            options += Option;
+
             if ((LogDir is not null) && (LogFilePrefix is not null) && (LogDatetimeFmt is not null))
             {
                 logFilename = $"{LogFilePrefix}{logTime.ToString(LogDatetimeFmt)}.txt";
                 logFilePath = Path.Join(LogDir, logFilename);
 
-                logOption = $" /LOG:{logFilePath}";
+                var logOption = $" /LOG:{logFilePath}";
+                options += logOption;
             }
 
-            string xdFiles = string.Empty;
-            if (XdFiles is not null)
-                xdFiles = $" /XD {XdFiles}";
+            if (XdDirs is not null)
+            {
+                var xdFiles = $" /XD {XdDirs}";
+                options += xdFiles;
+            }
+            if (XfFiles is not null)
+            {
+                var xfFiles = $" /XF {XfFiles}";
+                options += xfFiles;
+            }
 
-            var command = $"robocopy {SrcDir} {DstDir} {Option}{logOption}{xdFiles}";
+            var command = $"robocopy {SrcDir} {DstDir} {options}";
             return command;
         }
 
@@ -130,7 +178,8 @@ namespace RoboCopyMan
             string? logDir = null;
             string? logFilePrefix = null;
             string? logDatetimeFmt = null;
-            string? xdFiles = null;
+            string? xdDirs = null;
+            string? xfFiles = null;
             if (table.ContainsKey("logDir"))
             {
                 logDir = (string)table["logDir"];
@@ -146,10 +195,40 @@ namespace RoboCopyMan
                 logDatetimeFmt = (string)table["logDatetimeFmt"];
                 Debug.WriteLine($"Enable logDatetimeFmt: {logDatetimeFmt}");
             }
-            if (table.ContainsKey("xdFiles"))
+            if (table.ContainsKey("xdDirs"))
             {
-                xdFiles = (string)table["xdFiles"];
-                Debug.WriteLine($"Enable xdFiles: {xdFiles}");
+                xdDirs = (string)table["xdDirs"];
+                if (string.IsNullOrWhiteSpace(xdDirs))
+                    xdDirs = null;
+                else
+                    Debug.WriteLine($"Enable xdDirs: {xdDirs}");
+            }
+            if (table.ContainsKey("xfFiles"))
+            {
+                xfFiles = (string)table["xfFiles"];
+                if (string.IsNullOrWhiteSpace(xfFiles))
+                    xfFiles = null;
+                else
+                    Debug.WriteLine($"Enable xfFiles: {xfFiles}");
+            }
+            bool testMode = false;
+            if (table.ContainsKey("testMode"))
+            {
+                testMode = (bool)table["testMode"];
+                Debug.WriteLine($"Enable testMode: {testMode}");
+            }
+
+            string? precommand = null;
+            string? postcommand = null;
+            if (table.ContainsKey("precommand"))
+            {
+                precommand = (string)table["precommand"];
+                Debug.WriteLine($"Enable precommand: {precommand}");
+            }
+            if (table.ContainsKey("postcommand"))
+            {
+                postcommand = (string)table["postcommand"];
+                Debug.WriteLine($"Enable postcommand: {postcommand}");
             }
 
             var intervalMin = (long)table["intervalMinutes"];
@@ -165,7 +244,12 @@ namespace RoboCopyMan
                 LogDir = logDir,
                 LogFilePrefix = logFilePrefix,
                 LogDatetimeFmt = logDatetimeFmt,
-                XdFiles = xdFiles,
+                XdDirs = xdDirs,
+                XfFiles = xfFiles,
+                TestMode = testMode,
+
+                Precoomand = precommand,
+                Postcommand = postcommand,
 
                 IntervalMinutes = intervalMin,
                 DelayMinutes = delayMin,

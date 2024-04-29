@@ -20,11 +20,47 @@ namespace RoboCopyMan
         /// 実行コマンド
         /// </summary>
         public string Command { get; private set; }
+
         /// <summary>
         /// robocopy 実行時の標準出力
         /// </summary>
         public string StdOutput { get; private set; } = string.Empty;
+        /// <summary>
+        /// robocopy 実行時の標準エラー出力
+        /// </summary>
+        public string StdError { get; private set; } = string.Empty;
+        /// <summary>
+        /// robocopy 実行時の終了コード
+        /// </summary>
+        public int ExitCode { get; private set; } = 0;
+        /// <summary>
+        /// robocopy 実行が成功したかどうか
+        /// </summary>
+        public bool IsSuccessful { get => CheckExitCode(ExitCode); }
+        /// <summary>
+        /// robocopy 実行が成功したかどうか調べる
+        /// </summary>
+        /// <param name="exitCode">終了コード</param>
+        /// <returns></returns>
+        public static bool CheckExitCode(int exitCode)
+        {
+            return exitCode == 0 || exitCode == 1 || exitCode == 2;
+        }
 
+        //public static string GetErrorMessage(int exitCode)
+        //{
+
+        //    return exitCode switch
+        //    {
+        //        0 => "コピーする必要がないため、何も実施しなかった. ログの「スキップ(Skipped)」としてカウント.",
+        //        1 => "ファイルのコピーが成功した. フォルダーのコピーは含まれません.",
+        //        2 => "コピー先にのみ存在するファイル、フォルダが確認された. ログの「Extras」としてカウント.",
+        //        4 => "同じ名前で別の種類のファイルが存在した(Mismatched). ログの「不一致(Mismatch)」としてカウント.",
+        //        8 => "コピーに失敗した. ログの「失敗(FAILED)」としてカウント.",
+        //        16 => "致命的エラー。全く処理できなかったなど。.",
+        //        _ => "Unknown error.",
+        //    };
+        //}
 
         /// <summary>
         /// コンストラクタ
@@ -41,31 +77,15 @@ namespace RoboCopyMan
         /// <summary>
         /// バックアップ(robocopy)を実行する
         /// </summary>
-        /// <returns>標準出力</returns>
+        /// <returns>終了コード</returns>
         /// <exception cref="Exception"></exception>
-        public string Execute()
+        public int Execute()
         {
-            StdOutput = string.Empty;
-
-            ProcessStartInfo psInfo = new()
-            {
-                FileName = "cmd",
-                Arguments = "/c " + Command,
-                CreateNoWindow = true,  // コンソール開かない。
-                UseShellExecute = false,  // シェル機能使用しない。
-                RedirectStandardOutput = true,  // 標準出力をリダイレクト。
-            };
-
-            using Process process = Process.Start(psInfo) ?? throw new Exception();
-
-            // 標準出力を全て取得。
-            StdOutput = process.StandardOutput.ReadToEnd();
-
-            process.WaitForExit();
-            process.Close();
-
-            Debug.WriteLine(StdOutput);
-            return StdOutput;
+            var exitCode = Helper.ExecuteCommand(Command, out var stdOutput, out var srdError);
+            StdOutput = stdOutput;
+            StdError = srdError;
+            ExitCode = exitCode;
+            return exitCode;
         }
     }
 }

@@ -54,11 +54,15 @@
 - logFilePrefix： ログファイル名のプレフィックスです。
 - logDatetimeFmt： ログファイルの日付フォーマットです。C#の日付フォーマットに準拠しています。
 
-#### 除外ファイル設定 (xdFiles) は、任意です。コメントアウトすることで除外ファイルを無効化できます。
-- xdFiles は、除外するディレクトリです。
+#### 除外ファイル設定 (xdDirs, xfFiles) は、任意です。コメントアウトすることで除外ファイルを無効化できます。
+- xdDirs は、除外するディレクトリ、xfFiles は除外するファイルです。
 > 例えば・・・ `"\"System Volume Information\" \"$RECYCLE.BIN\""`
 > 
 > TOML でダブルクォーテーションを記述するには `\"` と記述してください。
+> 空の文字列でもエラーになりませんが、除外するディレクトリ、ファイルがない場合はコメントアウトしてください。
+
+#### テストモード (testMode) は、任意です。コメントアウトすることでテストモードを無効化できます。
+- testMode は、robocopy の /L オプションを付加するかどうかです。
 
 #### バックアップ間隔設定
 - intervalMinutes は、バックアップの実行間隔で、この時間ごとに robocopy が実行されます。
@@ -81,31 +85,30 @@ dstDir = "D:\\backup"
 # robocopy のオプション
 option = "/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE"
 
-# ログファイルの出力先ディレクトリ 
-# (このオプションは任意： コメントアウトすることで無効化（/LOG オプションを付加しない）
-logDir = "D:\\backup\\logs"
-# ログファイル名
-logFilename = "sample-"
-# ログファイル名に付加する日付フォーマット (C#の日付フォーマットに準拠)
-logDatetimeFmt = "yyyyMMdd-HHmmdd"
+# ログファイルの出力先ディレクトリ (このオプションは任意： コメントアウトすることで無効化（/LOG オプションを付加しない）
+# logDir = "D:\\backup\\logs"
+# ログファイル名のプレフィックス
+# logFilePrefix = "sample-"
+# ログファイル名のプレフィックスに付加する日付フォーマット (C#の日付フォーマットに準拠)
+# logDatetimeFmt = "yyyyMMdd-HHmmdd"
 
-# 除外するファイル・ディレクトリ
-# (このオプションは任意： コメントアウトすることで無効化（/XD オプションを付加しない）
-xdFiles = "\"System Volume Information\" \"$RECYCLE.BIN\""
+# 除外するディレクトリ・ファイル (このオプションは任意： コメントアウトすることで無効化（/XD, /XF オプションを付加しない）
+xdDirs = "\"System Volume Information\" \"$RECYCLE.BIN\""
+# xfFiles = ""
+
+# テストモード (true: テストモード /L オプションを付加する, false または コメントアウト: 実際にコピーする)
+testMode = true
 
 # バックアップ間隔（分）
 intervalMinutes = 60
 # 初回実行を遅らせるディレイ（分）
 delayMinutes = 5
 
-# 生成される robocopy のコマンド例
-# LogFilePath = {LogDir}\\{logFilename}{logDatetimeFmt}.txt
-# robocopy {SrcDir} {DstDir} {Option} /LOG:{LogFilePath} /XD {XdFiles}
-```
-
-- 上記設定で実行されるコマンド
-```
-robocopy C:\folder D:\backup /MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE /LOG:D:\backup\logs\sample-20240427-200427.txt /XD "System Volume Information" "$RECYCLE.BIN"
+# sample.toml で生成される robocopy コマンド例
+#     LogFilePath = {LogDir}\\{logFilename}{logDatetimeFmt}.txt
+#     robocopy {SrcDir} {DstDir} {Option} /LOG:{LogFilePath} /XD {xdDirs} /XF {xfFiles}
+#
+# robocopy C:\folder D:\backup /L /MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE /LOG:D:\backup\logs\sample-20210101-123456.txt /XD "System Volume Information" "$RECYCLE.BIN"
 ```
 
 ## アプリの動作
