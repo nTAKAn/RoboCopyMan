@@ -18,14 +18,25 @@ namespace RoboCopyMan
         {
             get => _backupManager ?? throw new NullReferenceException("バックアップマネージャが初期化されていません.");
         }
+        /// <summary>
+        /// ログ出力を有効化するか
+        /// </summary>
+        public static bool EnableLogging { get; set; } = false;
 
 
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
+            // パラメータ解析
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i] == "-log") // ログ出力を有効化
+                    EnableLogging = true;
+            }
+
             // 多重起動を防ぐ
             var mutex = new Mutex(false, APPFULLNAME);
             bool hasHandle;
@@ -48,7 +59,7 @@ namespace RoboCopyMan
             try
             {
                 // ロガーの準備
-                SerilogWrapper.Initialize(false, "serilog_setting.json");
+                SerilogWrapper.Initialize(!EnableLogging, "serilog_setting.json");
                 SerilogWrapper.Information("アプリケーションを開始しました.");
 
                 // バックアップ設定の読み込み
