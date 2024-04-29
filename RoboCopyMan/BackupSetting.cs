@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Data;
+using System.Diagnostics;
 using Tomlyn;
 
 namespace RoboCopyMan
@@ -41,6 +42,10 @@ namespace RoboCopyMan
         /// 除外するファイル・ディレクトリ (任意)
         /// </summary>
         public string? XdFiles { get; set; }
+        /// <summary>
+        /// テストモード
+        /// </summary>
+        public bool TestMode { get; set; }
 
         /// <summary>
         /// バックアップ間隔（分）
@@ -65,6 +70,7 @@ namespace RoboCopyMan
             LogFilePrefix = null;
             LogDatetimeFmt = null;
             XdFiles = null;
+            TestMode = false;
 
             IntervalMinutes = -1;
             DelayMinutes = -1;
@@ -85,30 +91,46 @@ namespace RoboCopyMan
             LogFilePrefix = src.LogFilePrefix;
             LogDatetimeFmt = src.LogDatetimeFmt;
             XdFiles = src.XdFiles;
+            TestMode = src.TestMode;
 
             IntervalMinutes = src.IntervalMinutes;
             DelayMinutes = src.DelayMinutes;
         }
 
+        /// <summary>
+        /// robocopy のコマンドを生成する
+        /// </summary>
+        /// <param name="logTime">ログファイルに使用する時刻</param>
+        /// <param name="logFilePath">生成したログファイルパス</param>
+        /// <param name="logFilename">生成したログファイル名</param>
+        /// <returns></returns>
         public string MakeCommand(DateTime logTime, out string? logFilePath, out string? logFilename)
         {
             logFilePath = null;
             logFilename = null;
+            string options = string.Empty;
 
-            string logOption = string.Empty;
+            if (TestMode)
+                options += "/L ";
+
+            options += Option;
+
             if ((LogDir is not null) && (LogFilePrefix is not null) && (LogDatetimeFmt is not null))
             {
                 logFilename = $"{LogFilePrefix}{logTime.ToString(LogDatetimeFmt)}.txt";
                 logFilePath = Path.Join(LogDir, logFilename);
 
-                logOption = $" /LOG:{logFilePath}";
+                var logOption = $" /LOG:{logFilePath}";
+                options += logOption;
             }
 
-            string xdFiles = string.Empty;
             if (XdFiles is not null)
-                xdFiles = $" /XD {XdFiles}";
+            {
+                var xdFiles = $" /XD {XdFiles}";
+                options += xdFiles;
+            }
 
-            var command = $"robocopy {SrcDir} {DstDir} {Option}{logOption}{xdFiles}";
+            var command = $"robocopy {SrcDir} {DstDir} {options}";
             return command;
         }
 
@@ -152,6 +174,13 @@ namespace RoboCopyMan
                 Debug.WriteLine($"Enable xdFiles: {xdFiles}");
             }
 
+            bool testMode = false;
+            if (table.ContainsKey("testMode"))
+            {
+                testMode = (bool)table["testMode"];
+                Debug.WriteLine($"Enable testMode: {testMode}");
+            }
+
             var intervalMin = (long)table["intervalMinutes"];
             var delayMin = (long)table["delayMinutes"];
 
@@ -166,6 +195,7 @@ namespace RoboCopyMan
                 LogFilePrefix = logFilePrefix,
                 LogDatetimeFmt = logDatetimeFmt,
                 XdFiles = xdFiles,
+                TestMode = testMode,
 
                 IntervalMinutes = intervalMin,
                 DelayMinutes = delayMin,

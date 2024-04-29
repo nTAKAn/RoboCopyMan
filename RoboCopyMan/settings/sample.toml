@@ -20,6 +20,9 @@ option = "/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE"
 # 除外するファイル・ディレクトリ (このオプションは任意： コメントアウトすることで無効化（/XD オプションを付加しない）
 # xdFiles = "\"System Volume Information\" \"$RECYCLE.BIN\""
 
+# テストモード (true: テストモード /L オプションを付加する, false または コメントアウト: 実際にコピーする)
+testMode = true
+
 # バックアップ間隔（分）
 intervalMinutes = 60
 # 初回実行を遅らせるディレイ（分）
