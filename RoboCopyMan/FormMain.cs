@@ -55,7 +55,7 @@ namespace RoboCopyMan
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "ポーリング処理でのバックアップに失敗しました.");
+                SerilogWrapper.Error(ex, "ポーリング処理でのバックアップに失敗しました.");
             }
         }
 
@@ -134,6 +134,17 @@ namespace RoboCopyMan
 
                 _notifyIcon.Visible = false;
 
+                //var task = Task.Run(() =>
+                //{
+                //    while (Program.BackupManager.IsExecuting)
+                //        Thread.Sleep(1000);
+                //});
+                
+                //if (task.Wait(10 * 1000))
+                //{
+                //    Debug.WriteLine("バックアップ中のため終了を待機");
+                //}
+
                 // 結果ダイアログが表示されている場合は閉じる
                 if (_formResult != null)
                 {
@@ -152,7 +163,7 @@ namespace RoboCopyMan
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, Program.APPFULLNAME, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Log.Error(ex, "終了処理でエラーが発生しました.");
+                SerilogWrapper.Error(ex, "終了処理でエラーが発生しました.");
             }
             finally
             {
@@ -215,7 +226,7 @@ namespace RoboCopyMan
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "強制バックアップ（手動バックアップ）に失敗しました.");
+                SerilogWrapper.Error(ex, "強制バックアップ（手動バックアップ）に失敗しました.");
             }
         }
         /// <summary>

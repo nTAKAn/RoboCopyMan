@@ -26,7 +26,7 @@ namespace RoboCopyMan
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "リンク先を開けませんでした.");
+                SerilogWrapper.Error(ex, "リンク先を開けませんでした.");
             }
         }
     }

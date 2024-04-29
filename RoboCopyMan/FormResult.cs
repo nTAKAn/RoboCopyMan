@@ -188,7 +188,7 @@ namespace RoboCopyMan
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "設定ファイルの編集に失敗しました.");
+                SerilogWrapper.Error(ex, "設定ファイルの編集に失敗しました.");
                 return;
             }
         }

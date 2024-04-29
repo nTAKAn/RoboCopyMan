@@ -1,4 +1,3 @@
-
 using Microsoft.Extensions.Configuration;
 using Serilog;
 
@@ -23,7 +22,7 @@ namespace RoboCopyMan
             get => _backupManager ?? throw new NullReferenceException("バックアップマネージャが初期化されていません.");
         }
 
-
+ 
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -52,18 +51,8 @@ namespace RoboCopyMan
             try
             {
                 // ロガーの準備
-                try
-                {
-                    var configuration = new ConfigurationBuilder().AddJsonFile("serilog_setting.json").Build();
-                    Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"ロガーの初期化に失敗しました. \n[{ex.Message}]", Program.APPFULLNAME, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                Log.Information("アプリケーションを開始しました.");
+                SerilogWrapper.Initialize(false, "serilog_setting.json");
+                SerilogWrapper.Information("アプリケーションを開始しました.");
 
                 // バックアップ設定の読み込み
                 try
@@ -73,7 +62,7 @@ namespace RoboCopyMan
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, "バックアップ設定の読み込みに失敗しました.");
+                    SerilogWrapper.Error(ex, "バックアップ設定の読み込みに失敗しました.");
                     return;
                 }
 
@@ -84,15 +73,15 @@ namespace RoboCopyMan
                 _ = new FormMain();
                 Application.Run();
 
-                Log.Information("アプリケーションを終了しました.");
+                SerilogWrapper.Information("アプリケーションを終了しました.");
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "アプリケーションはエラーで終了しました.");
+                SerilogWrapper.Error(ex, "アプリケーションはエラーで終了しました.");
             }
             finally
             {
-                Log.CloseAndFlush();
+                SerilogWrapper.CloseAndFlush();
                 mutex.ReleaseMutex();
             }
         }
