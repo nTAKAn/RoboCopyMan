@@ -109,7 +109,14 @@ namespace RoboCopyMan
                 var item = new ListViewItem(task.Setting.Title);
                 item.SubItems.Add(task.LastBackupTime.ToString("yyyy/MM/dd HH:mm:ss"));
                 item.SubItems.Add(task.NextTriggerTime.ToString("yyyy/MM/dd HH:mm:ss"));
-                item.SubItems.Add(task.LastException?.Message ?? "正常");
+
+                if (task.LastException is not null)
+                    item.SubItems.Add($"例外で終了: {task.LastException.Message}");
+                else if (task.ExitCode != 0)
+                    item.SubItems.Add($"エラー: 終了コード {task.ExitCode}");
+                else
+                    item.SubItems.Add("正常");
+
                 _listView.Items.Add(item);
             }
         }

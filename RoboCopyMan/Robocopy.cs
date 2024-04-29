@@ -20,10 +20,15 @@ namespace RoboCopyMan
         /// 実行コマンド
         /// </summary>
         public string Command { get; private set; }
+
         /// <summary>
         /// robocopy 実行時の標準出力
         /// </summary>
         public string StdOutput { get; private set; } = string.Empty;
+        /// <summary>
+        /// robocopy 実行時の標準エラー出力
+        /// </summary>
+        public string StdError { get; private set; } = string.Empty;
 
 
         /// <summary>
@@ -41,31 +46,14 @@ namespace RoboCopyMan
         /// <summary>
         /// バックアップ(robocopy)を実行する
         /// </summary>
-        /// <returns>標準出力</returns>
+        /// <returns>終了コード</returns>
         /// <exception cref="Exception"></exception>
-        public string Execute()
+        public int Execute()
         {
-            StdOutput = string.Empty;
-
-            ProcessStartInfo psInfo = new()
-            {
-                FileName = "cmd",
-                Arguments = "/c " + Command,
-                CreateNoWindow = true,  // コンソール開かない。
-                UseShellExecute = false,  // シェル機能使用しない。
-                RedirectStandardOutput = true,  // 標準出力をリダイレクト。
-            };
-
-            using Process process = Process.Start(psInfo) ?? throw new Exception();
-
-            // 標準出力を全て取得。
-            StdOutput = process.StandardOutput.ReadToEnd();
-
-            process.WaitForExit();
-            process.Close();
-
-            Debug.WriteLine(StdOutput);
-            return StdOutput;
+            var exitCode = Helper.ExecuteCommand(Command, out var stdOutput, out var srdError);
+            StdOutput = stdOutput;
+            StdError = srdError;
+            return exitCode;
         }
     }
 }

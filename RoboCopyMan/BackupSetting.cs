@@ -48,6 +48,15 @@ namespace RoboCopyMan
         public bool TestMode { get; set; }
 
         /// <summary>
+        /// バックアップ前に実行するコマンド
+        /// </summary>
+        public string? Precoomand { get; set; }
+        /// <summary>
+        /// バックアップ後に実行するコマンド
+        /// </summary>
+        public string? Postcommand { get; set; }
+
+        /// <summary>
         /// バックアップ間隔（分）
         /// </summary>
         public long IntervalMinutes { get; set; }
@@ -72,6 +81,9 @@ namespace RoboCopyMan
             XdFiles = null;
             TestMode = false;
 
+            Precoomand = null;
+            Postcommand = null;
+
             IntervalMinutes = -1;
             DelayMinutes = -1;
         }
@@ -92,6 +104,9 @@ namespace RoboCopyMan
             LogDatetimeFmt = src.LogDatetimeFmt;
             XdFiles = src.XdFiles;
             TestMode = src.TestMode;
+
+            Precoomand = src.Precoomand;
+            Postcommand = src.Postcommand;
 
             IntervalMinutes = src.IntervalMinutes;
             DelayMinutes = src.DelayMinutes;
@@ -181,6 +196,19 @@ namespace RoboCopyMan
                 Debug.WriteLine($"Enable testMode: {testMode}");
             }
 
+            string? precommand = null;
+            string? postcommand = null;
+            if (table.ContainsKey("precommand"))
+            {
+                precommand = (string)table["precommand"];
+                Debug.WriteLine($"Enable precommand: {precommand}");
+            }
+            if (table.ContainsKey("postcommand"))
+            {
+                postcommand = (string)table["postcommand"];
+                Debug.WriteLine($"Enable postcommand: {postcommand}");
+            }
+
             var intervalMin = (long)table["intervalMinutes"];
             var delayMin = (long)table["delayMinutes"];
 
@@ -196,6 +224,9 @@ namespace RoboCopyMan
                 LogDatetimeFmt = logDatetimeFmt,
                 XdFiles = xdFiles,
                 TestMode = testMode,
+
+                Precoomand = precommand,
+                Postcommand = postcommand,
 
                 IntervalMinutes = intervalMin,
                 DelayMinutes = delayMin,

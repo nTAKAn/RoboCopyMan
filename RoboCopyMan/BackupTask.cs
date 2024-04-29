@@ -64,6 +64,14 @@
         /// robocopy 実行時の標準出力を取得する
         /// </summary>
         public string StdOutput { get; private set; } = string.Empty;
+        /// <summary>
+        /// robocopy 実行時の標準エラーを取得する
+        /// </summary>
+        public string StdError { get; private set; } = string.Empty;
+        /// <summary>
+        /// robocopy 実行時の終了コードを取得する
+        /// </summary>
+        public int ExitCode { get; private set; } = 0;
 
         /// <summary>
         /// コンストラクタ
@@ -112,8 +120,9 @@
                     UpdateNextTriggerTime();
 
                 Robocopy robocopy = new(Setting);
-                robocopy.Execute();
-                StdOutput = robocopy.StdOutput; 
+                ExitCode = robocopy.Execute();
+                StdOutput = robocopy.StdOutput;
+                StdError = robocopy.StdError;
 
                 return true;
             }

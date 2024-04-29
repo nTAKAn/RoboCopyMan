@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using System.Diagnostics;
 
 namespace RoboCopyMan
 {
@@ -32,6 +33,9 @@ namespace RoboCopyMan
                 foreach (var task in BackupTasks)
                 {
                     if (task.LastException != null)
+                        return true;
+
+                    if (task.ExitCode != 0)
                         return true;
                 }
 
@@ -149,6 +153,8 @@ namespace RoboCopyMan
 
             return settings;
         }
+
+        
 
         /// <summary>
         /// バックアップを実行する
