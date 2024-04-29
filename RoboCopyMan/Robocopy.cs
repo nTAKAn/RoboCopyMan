@@ -44,7 +44,7 @@ namespace RoboCopyMan
         /// <returns></returns>
         public static bool CheckExitCode(int exitCode)
         {
-            return exitCode == 0 || exitCode == 1 || exitCode == 2;
+            return exitCode < 8;
         }
 
         //public static string GetErrorMessage(int exitCode)
