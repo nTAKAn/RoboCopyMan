@@ -1,4 +1,6 @@
-﻿namespace RoboCopyMan
+﻿using System.Diagnostics;
+
+namespace RoboCopyMan
 {
     /// <summary>
     /// バックアップタスク
@@ -111,8 +113,22 @@
         /// <returns>true: バックアップが実行された, false: バックアップは実行されなかった</returns>
         public bool Execute(bool forced = false, bool updateNextTrigger = true)
         {
-            if (!IsTimeToBackup && !forced)
-                return false;
+            // バックアップ時間を超過していない？
+            if (!IsTimeToBackup)
+            {
+                // 強制バックアップ？
+                if (forced)
+                {
+                    // 強制バックアップが無効？
+                    if (Setting.DisableForcedBackup)
+                    {
+                        Debug.WriteLine($"{Setting.Title}: 強制バックアップが 無効 に設定されているため強制バックアップを実行しませんでした.");
+                        return false;
+                    }
+                }
+                else
+                    return false;
+            }
 
             _semaphore.Wait(); // 非同期ではないのでフラグ代わり
 
