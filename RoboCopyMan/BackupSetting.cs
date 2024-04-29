@@ -39,9 +39,13 @@ namespace RoboCopyMan
         /// </summary>
         public string? LogDatetimeFmt { get; set; }
         /// <summary>
-        /// 除外するファイル・ディレクトリ (任意)
+        /// 除外するディレクトリ (任意)
         /// </summary>
-        public string? XdFiles { get; set; }
+        public string? XdDirs { get; set; }
+        /// <summary>
+        /// 除外するファイル (任意)
+        /// </summary>
+        public string? XfFiles { get; set; }
         /// <summary>
         /// テストモード
         /// </summary>
@@ -78,7 +82,8 @@ namespace RoboCopyMan
             LogDir = null;
             LogFilePrefix = null;
             LogDatetimeFmt = null;
-            XdFiles = null;
+            XdDirs = null;
+            XfFiles = null;
             TestMode = false;
 
             Precoomand = null;
@@ -102,7 +107,8 @@ namespace RoboCopyMan
             LogDir = src.LogDir;
             LogFilePrefix = src.LogFilePrefix;
             LogDatetimeFmt = src.LogDatetimeFmt;
-            XdFiles = src.XdFiles;
+            XdDirs = src.XdDirs;
+            XfFiles = src.XfFiles;
             TestMode = src.TestMode;
 
             Precoomand = src.Precoomand;
@@ -139,10 +145,15 @@ namespace RoboCopyMan
                 options += logOption;
             }
 
-            if (XdFiles is not null)
+            if (XdDirs is not null)
             {
-                var xdFiles = $" /XD {XdFiles}";
+                var xdFiles = $" /XD {XdDirs}";
                 options += xdFiles;
+            }
+            if (XfFiles is not null)
+            {
+                var xfFiles = $" /XF {XfFiles}";
+                options += xfFiles;
             }
 
             var command = $"robocopy {SrcDir} {DstDir} {options}";
@@ -167,7 +178,8 @@ namespace RoboCopyMan
             string? logDir = null;
             string? logFilePrefix = null;
             string? logDatetimeFmt = null;
-            string? xdFiles = null;
+            string? xdDirs = null;
+            string? xfFiles = null;
             if (table.ContainsKey("logDir"))
             {
                 logDir = (string)table["logDir"];
@@ -183,12 +195,22 @@ namespace RoboCopyMan
                 logDatetimeFmt = (string)table["logDatetimeFmt"];
                 Debug.WriteLine($"Enable logDatetimeFmt: {logDatetimeFmt}");
             }
-            if (table.ContainsKey("xdFiles"))
+            if (table.ContainsKey("xdDirs"))
             {
-                xdFiles = (string)table["xdFiles"];
-                Debug.WriteLine($"Enable xdFiles: {xdFiles}");
+                xdDirs = (string)table["xdDirs"];
+                if (string.IsNullOrWhiteSpace(xdDirs))
+                    xdDirs = null;
+                else
+                    Debug.WriteLine($"Enable xdDirs: {xdDirs}");
             }
-
+            if (table.ContainsKey("xfFiles"))
+            {
+                xfFiles = (string)table["xfFiles"];
+                if (string.IsNullOrWhiteSpace(xfFiles))
+                    xfFiles = null;
+                else
+                    Debug.WriteLine($"Enable xfFiles: {xfFiles}");
+            }
             bool testMode = false;
             if (table.ContainsKey("testMode"))
             {
@@ -222,7 +244,8 @@ namespace RoboCopyMan
                 LogDir = logDir,
                 LogFilePrefix = logFilePrefix,
                 LogDatetimeFmt = logDatetimeFmt,
-                XdFiles = xdFiles,
+                XdDirs = xdDirs,
+                XfFiles = xfFiles,
                 TestMode = testMode,
 
                 Precoomand = precommand,

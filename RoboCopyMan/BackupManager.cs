@@ -35,7 +35,7 @@ namespace RoboCopyMan
                     if (task.LastException != null)
                         return true;
 
-                    if (task.ExitCode != 0)
+                    if (!task.IsSuccessful)
                         return true;
                 }
 

@@ -112,10 +112,10 @@ namespace RoboCopyMan
 
                 if (task.LastException is not null)
                     item.SubItems.Add($"例外で終了: {task.LastException.Message}");
-                else if (task.ExitCode != 0)
+                else if (!task.IsSuccessful)
                     item.SubItems.Add($"エラー: 終了コード {task.ExitCode}");
                 else
-                    item.SubItems.Add("正常");
+                    item.SubItems.Add($"正常: 終了コード {task.ExitCode}");
 
                 _listView.Items.Add(item);
             }

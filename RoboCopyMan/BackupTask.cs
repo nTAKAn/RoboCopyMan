@@ -72,6 +72,10 @@
         /// robocopy 実行時の終了コードを取得する
         /// </summary>
         public int ExitCode { get; private set; } = 0;
+        /// <summary>
+        /// robocopy 実行が成功したかどうか
+        /// </summary>
+        public bool IsSuccessful { get => Robocopy.CheckExitCode(ExitCode); }
 
         /// <summary>
         /// コンストラクタ
