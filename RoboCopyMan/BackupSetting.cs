@@ -49,11 +49,11 @@ namespace RoboCopyMan
         /// テストモード
         /// </summary>
         public bool TestMode { get; set; }
+
         /// <summary>
         /// 強制バックアップを無効化
         /// </summary>
         public bool DisableForcedBackup { get; set; }
-
         /// <summary>
         /// バックアップ前に実行するコマンド
         /// </summary>
@@ -88,8 +88,8 @@ namespace RoboCopyMan
             XdDirs = null;
             XfFiles = null;
             TestMode = false;
-            DisableForcedBackup = false;
 
+            DisableForcedBackup = false;
             Precoomand = null;
             Postcommand = null;
 
@@ -114,8 +114,8 @@ namespace RoboCopyMan
             XdDirs = src.XdDirs;
             XfFiles = src.XfFiles;
             TestMode = src.TestMode;
-            DisableForcedBackup = src.DisableForcedBackup;
 
+            DisableForcedBackup = src.DisableForcedBackup;
             Precoomand = src.Precoomand;
             Postcommand = src.Postcommand;
 
@@ -172,6 +172,8 @@ namespace RoboCopyMan
         /// <returns>読み込んだ設定ファイル</returns>
         public static BackupSetting Load(string path)
         {
+            Debug.WriteLine($"* Load BackupSetting: {path}");
+
             var tomlString = File.ReadAllText(path);
             var table = Toml.ToModel(tomlString);
 
@@ -185,6 +187,7 @@ namespace RoboCopyMan
             string? logDatetimeFmt = null;
             string? xdDirs = null;
             string? xfFiles = null;
+            bool testMode = false;
             if (table.ContainsKey("logDir"))
             {
                 logDir = (string)table["logDir"];
@@ -216,21 +219,20 @@ namespace RoboCopyMan
                 else
                     Debug.WriteLine($"Enable xfFiles: {xfFiles}");
             }
-            bool testMode = false;
             if (table.ContainsKey("testMode"))
             {
                 testMode = (bool)table["testMode"];
                 Debug.WriteLine($"Enable testMode: {testMode}");
             }
+
             bool disableForcedBackup = false;
+            string? precommand = null;
+            string? postcommand = null;
             if (table.ContainsKey("disableForcedBackup"))
             {
                 disableForcedBackup = (bool)table["disableForcedBackup"];
                 Debug.WriteLine($"Enable disableForcedBackup: {disableForcedBackup}");
             }
-
-            string? precommand = null;
-            string? postcommand = null;
             if (table.ContainsKey("precommand"))
             {
                 precommand = (string)table["precommand"];
@@ -258,8 +260,8 @@ namespace RoboCopyMan
                 XdDirs = xdDirs,
                 XfFiles = xfFiles,
                 TestMode = testMode,
-                DisableForcedBackup = disableForcedBackup,
 
+                DisableForcedBackup = disableForcedBackup,
                 Precoomand = precommand,
                 Postcommand = postcommand,
 
