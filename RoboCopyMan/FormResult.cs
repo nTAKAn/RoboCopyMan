@@ -1,5 +1,4 @@
-﻿using Serilog;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 #pragma warning disable IDE1006 // 命名スタイル
 

@@ -1,7 +1,4 @@
-﻿using Serilog;
-using System.Diagnostics;
-
-namespace RoboCopyMan
+﻿namespace RoboCopyMan
 {
     /// <summary>
     /// バックアップマネージャ
@@ -106,7 +103,7 @@ namespace RoboCopyMan
         /// </summary>
         public event EndBackupEventHandler? EndBackup;
 
-        
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
@@ -154,8 +151,6 @@ namespace RoboCopyMan
             return settings;
         }
 
-        
-
         /// <summary>
         /// バックアップを実行する
         /// </summary>
@@ -202,7 +197,7 @@ namespace RoboCopyMan
                 BeginBackup?.Invoke(this, EventArgs.Empty);
                 backupExecuted = true;
             }
-            
+
             try
             {
                 // HACK: キャンセルトークンを渡す処理を検討する

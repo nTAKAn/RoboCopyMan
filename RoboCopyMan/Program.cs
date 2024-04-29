@@ -1,6 +1,3 @@
-using Microsoft.Extensions.Configuration;
-using Serilog;
-
 namespace RoboCopyMan
 {
     internal static class Program
@@ -22,7 +19,7 @@ namespace RoboCopyMan
             get => _backupManager ?? throw new NullReferenceException("バックアップマネージャが初期化されていません.");
         }
 
- 
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>

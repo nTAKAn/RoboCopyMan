@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace RoboCopyMan
+﻿namespace RoboCopyMan
 {
     /// <summary>
     /// robocopy ラッパー

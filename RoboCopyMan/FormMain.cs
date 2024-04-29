@@ -1,8 +1,6 @@
 #pragma warning disable IDE1006 // 命名スタイル
 
-using Serilog;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 namespace RoboCopyMan
 {
@@ -139,7 +137,7 @@ namespace RoboCopyMan
                 //    while (Program.BackupManager.IsExecuting)
                 //        Thread.Sleep(1000);
                 //});
-                
+
                 //if (task.Wait(10 * 1000))
                 //{
                 //    Debug.WriteLine("バックアップ中のため終了を待機");
@@ -302,6 +300,6 @@ namespace RoboCopyMan
             _formAbout = null;
         }
 
-        
+
     }
 }
