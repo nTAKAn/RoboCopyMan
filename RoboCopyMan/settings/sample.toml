@@ -15,7 +15,7 @@ option = "/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE"
 # ログファイル名のプレフィックス
 # logFilePrefix = "sample-"
 # ログファイル名のプレフィックスに付加する日付フォーマット (C#の日付フォーマットに準拠)
-# logDatetimeFmt = "yyyyMMdd-HHmmdd"
+# logDatetimeFmt = "yyyyMMdd-HHmmss"
 
 # 除外するディレクトリ・ファイル (このオプションは任意： コメントアウトすることで無効化（/XD, /XF オプションを付加しない）
 xdDirs = "\"System Volume Information\" \"$RECYCLE.BIN\""
