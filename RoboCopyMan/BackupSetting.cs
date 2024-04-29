@@ -50,6 +50,10 @@ namespace RoboCopyMan
         /// テストモード
         /// </summary>
         public bool TestMode { get; set; }
+        /// <summary>
+        /// 強制バックアップを無効化
+        /// </summary>
+        public bool DisableForcedBackup { get; set; }
 
         /// <summary>
         /// バックアップ前に実行するコマンド
@@ -85,6 +89,7 @@ namespace RoboCopyMan
             XdDirs = null;
             XfFiles = null;
             TestMode = false;
+            DisableForcedBackup = false;
 
             Precoomand = null;
             Postcommand = null;
@@ -110,6 +115,7 @@ namespace RoboCopyMan
             XdDirs = src.XdDirs;
             XfFiles = src.XfFiles;
             TestMode = src.TestMode;
+            DisableForcedBackup = src.DisableForcedBackup;
 
             Precoomand = src.Precoomand;
             Postcommand = src.Postcommand;
@@ -217,6 +223,12 @@ namespace RoboCopyMan
                 testMode = (bool)table["testMode"];
                 Debug.WriteLine($"Enable testMode: {testMode}");
             }
+            bool disableForcedBackup = false;
+            if (table.ContainsKey("disableForcedBackup"))
+            {
+                disableForcedBackup = (bool)table["disableForcedBackup"];
+                Debug.WriteLine($"Enable disableForcedBackup: {disableForcedBackup}");
+            }
 
             string? precommand = null;
             string? postcommand = null;
@@ -247,6 +259,7 @@ namespace RoboCopyMan
                 XdDirs = xdDirs,
                 XfFiles = xfFiles,
                 TestMode = testMode,
+                DisableForcedBackup = disableForcedBackup,
 
                 Precoomand = precommand,
                 Postcommand = postcommand,

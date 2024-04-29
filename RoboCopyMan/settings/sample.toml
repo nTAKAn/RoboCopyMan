@@ -23,6 +23,8 @@ xdDirs = "\"System Volume Information\" \"$RECYCLE.BIN\""
 
 # テストモード (true: テストモード /L オプションを付加する, false または コメントアウト: 実際にコピーする)
 testMode = true
+# 強制バックアップ無効設定 (true: 強制バックアップ無効, false または コメントアウト: 強制バックアップ有効)
+# disableForcedBackup = true
 
 # バックアップ間隔（分）
 intervalMinutes = 60
