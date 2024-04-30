@@ -73,16 +73,6 @@
 
 
         /// <summary>
-        /// バックアップタスクが実行されたときに発生するイベント
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public delegate void BackupTaskExecutedEventHandler(object sender, EventArgs e);
-        /// <summary>
-        /// バックアップタスクが実行されたときに発生するイベント
-        /// </summary>
-        public event BackupTaskExecutedEventHandler? BackupTaskExecuted;
-        /// <summary>
         /// バックアップ開始時に発生するイベント
         /// </summary>
         /// <param name="sender"></param>
@@ -161,35 +151,6 @@
         }
 
         /// <summary>
-        /// バックアップを実行する
-        /// </summary>
-        /// <param name="forced">true: 現在時刻に関わらず強制的にバックアップする, false 通常バックアップ</param>
-        public void Execute(bool forced = false)
-        {
-            bool backupExecuted = false;
-
-            foreach (var task in BackupTasks)
-            {
-                try
-                {
-                    if (task.Execute(forced))
-                    {
-                        SerilogWrapper.Information($"{task.Setting.Title}: バックアップを実行しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
-                        SerilogWrapper.Information($"{task.Setting.Title}: 次回バックアップ時間: {task.NextTriggerTime}");
-                        backupExecuted = true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    SerilogWrapper.Error(ex, $"{task.Setting.Title}: バックアップ中に例外が発生しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
-                }
-            }
-
-            if (backupExecuted)
-                BackupTaskExecuted?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
         /// 非同期バックアップを実行する
         /// </summary>
         /// <param name="forced">true: 現在時刻に関わらず強制的にバックアップする, false 通常バックアップ</param>
@@ -210,12 +171,30 @@
             try
             {
                 // HACK: キャンセルトークンを渡す処理を検討する
-                await Task.Run(() => Execute(forced));
+                await Task.Run(() =>
+                {
+                    foreach (var task in BackupTasks)
+                    {
+                        try
+                        {
+                            if (task.Execute(forced))
+                            {
+                                SerilogWrapper.Information($"{task.Setting.Title}: バックアップを実行しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
+                                SerilogWrapper.Information($"{task.Setting.Title}: 次回バックアップ時間: {task.NextTriggerTime}");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            SerilogWrapper.Error(ex, $"{task.Setting.Title}: バックアップ中に例外が発生しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
+                        }
+                    }
+                });
             }
             finally
             {
                 _semaphore.Release();
 
+                // HACK: このイベントが発生していない?
                 // バックアップ終了イベントを発生させる
                 if (backupExecuted)
                     EndBackup?.Invoke(this, EventArgs.Empty);

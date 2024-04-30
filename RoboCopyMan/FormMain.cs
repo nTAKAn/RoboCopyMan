@@ -22,7 +22,6 @@ namespace RoboCopyMan
 
             UpdateNotifyIcon();
 
-            Program.BackupManager.BackupTaskExecuted += _backupManager_BackupTaskExecuted;
             Program.BackupManager.BeginBackup += _backupManager_BeginBackupEventHandler;
             Program.BackupManager.EndBackup += _backupManager_EndBackupEventHandler;
 
@@ -58,15 +57,6 @@ namespace RoboCopyMan
         }
 
         /// <summary>
-        /// バックアップタスクが実行されたときの処理
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void _backupManager_BackupTaskExecuted(object sender, EventArgs e)
-        {
-            UpdateNotifyIcon();
-        }
-        /// <summary>
         /// バックアップ開始時の処理
         /// </summary>
         /// <param name="sender"></param>
@@ -96,6 +86,10 @@ namespace RoboCopyMan
         /// </summary>
         private void UpdateNotifyIcon()
         {
+            // HACK: バックアップ終了しているが、アイコンが更新されていない
+            // （バックアップ中のまま、しかし、メニューは有効になっている）
+            // 強制バックアップでは、アイコンはきちんと更新される
+
             // バックアップ実行中の場合
             if (Program.BackupManager.IsExecuting)
             {
@@ -146,7 +140,6 @@ namespace RoboCopyMan
                 // 結果ダイアログが表示されている場合は閉じる
                 if (_formResult != null)
                 {
-                    Program.BackupManager.BackupTaskExecuted -= _backupManager_BackupTaskExecuted;
                     _formResult.Close();
                     _formResult = null;
                 }
