@@ -187,5 +187,25 @@ namespace RoboCopyMan
                 return;
             }
         }
+
+        private void openSettingDataDirToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var task = SelectedTask;
+            if (task is null)
+                return;
+
+            try
+            {
+                var dir = Path.GetDirectoryName(task.Filepath);
+
+                if (!string.IsNullOrEmpty(dir) && Directory.Exists(dir))
+                    Process.Start("explorer.exe", dir);
+            }
+            catch (Exception ex)
+            {
+                SerilogWrapper.Error(ex, "設定ファイルの編集に失敗しました.");
+                return;
+            }
+        }
     }
 }
