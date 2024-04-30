@@ -74,6 +74,21 @@ namespace RoboCopyMan
         /// robocopy 実行時の終了コードを取得する
         /// </summary>
         public int ExitCode { get; private set; } = 0;
+
+        /// <summary>
+        /// プリコマンド、robocopy、ポストコマンド含めた標準出力を取得する
+        /// </summary>
+        public List<string> StdOutputs { get; private set; } = [];
+        /// <summary>
+        /// プリコマンド、robocopy、ポストコマンド含めた標準エラーを取得する
+        /// </summary>
+        public List<string> StdErrors { get; private set; } = [];
+
+        /// <summary>
+        /// プリコマンド、robocopy、ポストコマンド含めた終了コードを取得する
+        /// </summary>
+        public List<int> ExitCodes { get; private set; } = [];
+
         /// <summary>
         /// robocopy 実行が成功したかどうか
         /// </summary>
@@ -132,23 +147,53 @@ namespace RoboCopyMan
 
             _semaphore.Wait(); // 非同期ではないのでフラグ代わり
 
+            LastBackupTime = DateTime.Now;
+            if (updateNextTrigger)
+                UpdateNextTriggerTime();
+
+            ExitCode = 0;
+            StdOutput = string.Empty;
+            StdError = string.Empty;
+            ExitCodes = [];
+            StdOutputs = [];
+            StdErrors = [];
+            LastException = null;
+
             try
             {
-                LastBackupTime = DateTime.Now;
+                // プリコマンド 実行
+                if (!string.IsNullOrEmpty(Setting.Precommand))
+                {
+                    var exitCode = Helper.ExecuteCommand(Setting.Precommand, out var stdOutput, out var stdError);
+                    ExitCodes.Add(exitCode);
+                    StdOutputs.Add(stdOutput);
+                    StdErrors.Add(stdError);
+                }
 
-                if (updateNextTrigger)
-                    UpdateNextTriggerTime();
-
+                // robocopy 実行
                 Robocopy robocopy = new(Setting);
                 ExitCode = robocopy.Execute();
                 StdOutput = robocopy.StdOutput;
                 StdError = robocopy.StdError;
 
+                ExitCodes.Add(ExitCode);
+                StdOutputs.Add(StdOutput);
+                StdErrors.Add(StdError);
+
+                // ポストコマンド 実行
+                if (!string.IsNullOrEmpty(Setting.Postcommand))
+                {
+                    var exitCode = Helper.ExecuteCommand(Setting.Postcommand, out var stdOutput, out var stdError);
+                    ExitCodes.Add(exitCode);
+                    StdOutputs.Add(stdOutput);
+                    StdErrors.Add(stdError);
+                }
+
                 return true;
             }
             catch (Exception ex)
             {
-                StdOutput = string.Empty;
+                //StdOutput = string.Empty;
                 LastException = ex;
                 throw;
             }

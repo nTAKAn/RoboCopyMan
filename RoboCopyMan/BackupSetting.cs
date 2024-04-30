@@ -62,7 +62,7 @@ namespace RoboCopyMan
         /// <summary>
         /// バックアップ前に実行するコマンド
         /// </summary>
-        public string? Precoomand { get; set; }
+        public string? Precommand { get; set; }
         /// <summary>
         /// バックアップ後に実行するコマンド
         /// </summary>
@@ -97,7 +97,7 @@ namespace RoboCopyMan
             TestMode = false;
 
             DisableForcedBackup = false;
-            Precoomand = null;
+            Precommand = null;
             Postcommand = null;
 
             IntervalMinutes = -1;
@@ -125,7 +125,7 @@ namespace RoboCopyMan
             TestMode = src.TestMode;
 
             DisableForcedBackup = src.DisableForcedBackup;
-            Precoomand = src.Precoomand;
+            Precommand = src.Precommand;
             Postcommand = src.Postcommand;
 
             IntervalMinutes = src.IntervalMinutes;
@@ -280,7 +280,7 @@ namespace RoboCopyMan
                 TestMode = testMode,
 
                 DisableForcedBackup = disableForcedBackup,
-                Precoomand = precommand,
+                Precommand = precommand,
                 Postcommand = postcommand,
 
                 IntervalMinutes = intervalMin,
