@@ -148,6 +148,15 @@
                 }
             }
 
+            // Order で降順ソートする。ただし、Order が同じ場合は Title でソートする
+            settings.Sort((a, b) =>
+            {
+                if (a.Item1.Order == b.Item1.Order)
+                    return string.Compare(a.Item1.Title, b.Item1.Title, StringComparison.OrdinalIgnoreCase);
+                else
+                    return (int)(a.Item1.Order - b.Item1.Order);
+            });
+
             return settings;
         }
 

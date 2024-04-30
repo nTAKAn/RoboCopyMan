@@ -13,6 +13,11 @@ namespace RoboCopyMan
         /// </summary>
         public string Title { get; set; }
         /// <summary>
+        /// 表示順番
+        /// </summary>
+        public long Order { get; set; }
+
+        /// <summary>
         /// バックアップ元ディレクトリ
         /// </summary>
         public string SrcDir { get; set; }
@@ -78,6 +83,8 @@ namespace RoboCopyMan
         public BackupSetting()
         {
             Title = string.Empty;
+            Order = 0;
+
             SrcDir = string.Empty;
             DstDir = string.Empty;
             Option = string.Empty;
@@ -104,6 +111,8 @@ namespace RoboCopyMan
         public BackupSetting(BackupSetting src)
         {
             Title = src.Title;
+            Order = src.Order;
+
             SrcDir = src.SrcDir;
             DstDir = src.DstDir;
             Option = src.Option;
@@ -178,6 +187,13 @@ namespace RoboCopyMan
             var table = Toml.ToModel(tomlString);
 
             var title = (string)table["title"];
+            long order = 0;
+            if (table.ContainsKey("order"))
+            {
+                order = (long)table["order"];
+                Debug.WriteLine($"Enable order: {order}");
+            }
+
             var srcDir = (string)table["srcDir"];
             var dstDir = (string)table["dstDir"];
             string option = (string)table["option"];
@@ -250,6 +266,8 @@ namespace RoboCopyMan
             return new BackupSetting()
             {
                 Title = title,
+                Order = order,
+
                 SrcDir = srcDir,
                 DstDir = dstDir,
                 Option = option,
