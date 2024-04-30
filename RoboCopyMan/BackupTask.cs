@@ -168,6 +168,10 @@ namespace RoboCopyMan
                     ExitCodes.Add(exitCode);
                     StdOutputs.Add(stdOutput);
                     StdErrors.Add(stdError);
+
+                    // エラーが発生した場合はこれ以上継続しない
+                    if (exitCode != 0)
+                        return false;
                 }
 
                 // robocopy 実行
