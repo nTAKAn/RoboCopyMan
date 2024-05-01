@@ -1,7 +1,4 @@
-﻿using Serilog;
-using System.Diagnostics;
-
-namespace RoboCopyMan
+﻿namespace RoboCopyMan
 {
     /// <summary>
     /// バックアップマネージャ
@@ -76,16 +73,6 @@ namespace RoboCopyMan
 
 
         /// <summary>
-        /// バックアップタスクが実行されたときに発生するイベント
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public delegate void BackupTaskExecutedEventHandler(object sender, EventArgs e);
-        /// <summary>
-        /// バックアップタスクが実行されたときに発生するイベント
-        /// </summary>
-        public event BackupTaskExecutedEventHandler? BackupTaskExecuted;
-        /// <summary>
         /// バックアップ開始時に発生するイベント
         /// </summary>
         /// <param name="sender"></param>
@@ -106,7 +93,7 @@ namespace RoboCopyMan
         /// </summary>
         public event EndBackupEventHandler? EndBackup;
 
-        
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
@@ -151,38 +138,16 @@ namespace RoboCopyMan
                 }
             }
 
-            return settings;
-        }
-
-        
-
-        /// <summary>
-        /// バックアップを実行する
-        /// </summary>
-        /// <param name="forced">true: 現在時刻に関わらず強制的にバックアップする, false 通常バックアップ</param>
-        public void Execute(bool forced = false)
-        {
-            bool backupExecuted = false;
-
-            foreach (var task in BackupTasks)
+            // Order で降順ソートする。ただし、Order が同じ場合は Title でソートする
+            settings.Sort((a, b) =>
             {
-                try
-                {
-                    if (task.Execute(forced))
-                    {
-                        SerilogWrapper.Information($"{task.Setting.Title}: バックアップを実行しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
-                        SerilogWrapper.Information($"{task.Setting.Title}: 次回バックアップ時間: {task.NextTriggerTime}");
-                        backupExecuted = true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    SerilogWrapper.Error(ex, $"{task.Setting.Title}: バックアップ中に例外が発生しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
-                }
-            }
+                if (a.Item1.Order == b.Item1.Order)
+                    return string.Compare(a.Item1.Title, b.Item1.Title, StringComparison.OrdinalIgnoreCase);
+                else
+                    return (int)(a.Item1.Order - b.Item1.Order);
+            });
 
-            if (backupExecuted)
-                BackupTaskExecuted?.Invoke(this, EventArgs.Empty);
+            return settings;
         }
 
         /// <summary>
@@ -202,16 +167,34 @@ namespace RoboCopyMan
                 BeginBackup?.Invoke(this, EventArgs.Empty);
                 backupExecuted = true;
             }
-            
+
             try
             {
                 // HACK: キャンセルトークンを渡す処理を検討する
-                await Task.Run(() => Execute(forced));
+                await Task.Run(() =>
+                {
+                    foreach (var task in BackupTasks)
+                    {
+                        try
+                        {
+                            if (task.Execute(forced))
+                            {
+                                SerilogWrapper.Information($"{task.Setting.Title}: バックアップを実行しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
+                                SerilogWrapper.Information($"{task.Setting.Title}: 次回バックアップ時間: {task.NextTriggerTime}");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            SerilogWrapper.Error(ex, $"{task.Setting.Title}: バックアップ中に例外が発生しました. {task.Setting.SrcDir} -> {task.Setting.DstDir}");
+                        }
+                    }
+                });
             }
             finally
             {
                 _semaphore.Release();
 
+                // HACK: このイベントが発生していない?
                 // バックアップ終了イベントを発生させる
                 if (backupExecuted)
                     EndBackup?.Invoke(this, EventArgs.Empty);

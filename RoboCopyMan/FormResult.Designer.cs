@@ -35,6 +35,7 @@
             toolToolStripMenuItem = new ToolStripMenuItem();
             makeCommandToolStripMenuItem = new ToolStripMenuItem();
             editSettingFileToolStripMenuItem = new ToolStripMenuItem();
+            openSettingDataDirToolStripMenuItem = new ToolStripMenuItem();
             _statusStrip = new StatusStrip();
             _toolStripStatusLabel_SrcDir = new ToolStripStatusLabel();
             _toolStripStatusLabel_DstDir = new ToolStripStatusLabel();
@@ -78,7 +79,7 @@
             // 
             // toolToolStripMenuItem
             // 
-            toolToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { makeCommandToolStripMenuItem, editSettingFileToolStripMenuItem });
+            toolToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { makeCommandToolStripMenuItem, editSettingFileToolStripMenuItem, openSettingDataDirToolStripMenuItem });
             toolToolStripMenuItem.Name = "toolToolStripMenuItem";
             toolToolStripMenuItem.Size = new Size(60, 20);
             toolToolStripMenuItem.Text = "ツール(&T)";
@@ -96,6 +97,13 @@
             editSettingFileToolStripMenuItem.Size = new Size(298, 22);
             editSettingFileToolStripMenuItem.Text = "設定ファイルを編集する(&E)";
             editSettingFileToolStripMenuItem.Click += editSettingFileToolStripMenuItem_Click;
+            // 
+            // openSettingDataDirToolStripMenuItem
+            // 
+            openSettingDataDirToolStripMenuItem.Name = "openSettingDataDirToolStripMenuItem";
+            openSettingDataDirToolStripMenuItem.Size = new Size(298, 22);
+            openSettingDataDirToolStripMenuItem.Text = "設定ファイルのフォルダを開く(&F)";
+            openSettingDataDirToolStripMenuItem.Click += openSettingDataDirToolStripMenuItem_Click;
             // 
             // _statusStrip
             // 
@@ -232,5 +240,6 @@
         private ToolStripMenuItem editSettingFileToolStripMenuItem;
         private SplitContainer _splitContainer;
         private TextBox _textBox_stdOut;
+        private ToolStripMenuItem openSettingDataDirToolStripMenuItem;
     }
 }

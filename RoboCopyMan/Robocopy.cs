@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace RoboCopyMan
+﻿namespace RoboCopyMan
 {
     /// <summary>
     /// robocopy ラッパー
@@ -81,9 +79,9 @@ namespace RoboCopyMan
         /// <exception cref="Exception"></exception>
         public int Execute()
         {
-            var exitCode = Helper.ExecuteCommand(Command, out var stdOutput, out var srdError);
+            var exitCode = Helper.ExecuteCommand(Command, out var stdOutput, out var stdError);
             StdOutput = stdOutput;
-            StdError = srdError;
+            StdError = stdError;
             ExitCode = exitCode;
             return exitCode;
         }

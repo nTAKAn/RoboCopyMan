@@ -1,5 +1,4 @@
-﻿using Serilog;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 #pragma warning disable IDE1006 // 命名スタイル
 
@@ -39,7 +38,6 @@ namespace RoboCopyMan
             UpdateResultList();
 
             // 表示変更のためにバックアップマネージャのバックアップタスク実行イベントを登録
-            Program.BackupManager.BackupTaskExecuted += _backupManager_BackupTaskExecuted;
             Program.BackupManager.BeginBackup += _backupManager_BeginBackupEventHandler;
             Program.BackupManager.EndBackup += _backupManager_EndBackupEventHandler;
 
@@ -49,7 +47,6 @@ namespace RoboCopyMan
         private void FormResult_FormClosing(object sender, FormClosingEventArgs e)
         {
             // イベントの登録解除
-            Program.BackupManager.BackupTaskExecuted -= _backupManager_BackupTaskExecuted;
             Program.BackupManager.BeginBackup -= _backupManager_BeginBackupEventHandler;
             Program.BackupManager.EndBackup -= _backupManager_EndBackupEventHandler;
         }
@@ -58,15 +55,6 @@ namespace RoboCopyMan
         {
         }
 
-        /// <summary>
-        /// バックアップタスクが実行されたときの処理
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void _backupManager_BackupTaskExecuted(object sender, EventArgs e)
-        {
-            //Invoke(() => UpdateResultList());  // 非同期処理のため UI スレッドでの処理が必要
-        }
         /// <summary>
         /// バックアップ開始時の処理
         /// </summary>
@@ -192,6 +180,26 @@ namespace RoboCopyMan
                     UseShellExecute = true, // 重要
                 };
                 Process.Start(pi);
+            }
+            catch (Exception ex)
+            {
+                SerilogWrapper.Error(ex, "設定ファイルの編集に失敗しました.");
+                return;
+            }
+        }
+
+        private void openSettingDataDirToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var task = SelectedTask;
+            if (task is null)
+                return;
+
+            try
+            {
+                var dir = Path.GetDirectoryName(task.Filepath);
+
+                if (!string.IsNullOrEmpty(dir) && Directory.Exists(dir))
+                    Process.Start("explorer.exe", dir);
             }
             catch (Exception ex)
             {

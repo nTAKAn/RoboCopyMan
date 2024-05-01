@@ -1,5 +1,4 @@
-﻿using System.Data;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Tomlyn;
 
 namespace RoboCopyMan
@@ -13,6 +12,11 @@ namespace RoboCopyMan
         /// バックアップ設定のタイトル
         /// </summary>
         public string Title { get; set; }
+        /// <summary>
+        /// 表示順番
+        /// </summary>
+        public long Order { get; set; }
+
         /// <summary>
         /// バックアップ元ディレクトリ
         /// </summary>
@@ -52,9 +56,13 @@ namespace RoboCopyMan
         public bool TestMode { get; set; }
 
         /// <summary>
+        /// 強制バックアップを無効化
+        /// </summary>
+        public bool DisableForcedBackup { get; set; }
+        /// <summary>
         /// バックアップ前に実行するコマンド
         /// </summary>
-        public string? Precoomand { get; set; }
+        public string? Precommand { get; set; }
         /// <summary>
         /// バックアップ後に実行するコマンド
         /// </summary>
@@ -75,6 +83,8 @@ namespace RoboCopyMan
         public BackupSetting()
         {
             Title = string.Empty;
+            Order = 0;
+
             SrcDir = string.Empty;
             DstDir = string.Empty;
             Option = string.Empty;
@@ -86,7 +96,8 @@ namespace RoboCopyMan
             XfFiles = null;
             TestMode = false;
 
-            Precoomand = null;
+            DisableForcedBackup = false;
+            Precommand = null;
             Postcommand = null;
 
             IntervalMinutes = -1;
@@ -100,6 +111,8 @@ namespace RoboCopyMan
         public BackupSetting(BackupSetting src)
         {
             Title = src.Title;
+            Order = src.Order;
+
             SrcDir = src.SrcDir;
             DstDir = src.DstDir;
             Option = src.Option;
@@ -111,7 +124,8 @@ namespace RoboCopyMan
             XfFiles = src.XfFiles;
             TestMode = src.TestMode;
 
-            Precoomand = src.Precoomand;
+            DisableForcedBackup = src.DisableForcedBackup;
+            Precommand = src.Precommand;
             Postcommand = src.Postcommand;
 
             IntervalMinutes = src.IntervalMinutes;
@@ -167,10 +181,19 @@ namespace RoboCopyMan
         /// <returns>読み込んだ設定ファイル</returns>
         public static BackupSetting Load(string path)
         {
+            Debug.WriteLine($"* Load BackupSetting: {path}");
+
             var tomlString = File.ReadAllText(path);
             var table = Toml.ToModel(tomlString);
 
             var title = (string)table["title"];
+            long order = 0;
+            if (table.ContainsKey("order"))
+            {
+                order = (long)table["order"];
+                Debug.WriteLine($"Enable order: {order}");
+            }
+
             var srcDir = (string)table["srcDir"];
             var dstDir = (string)table["dstDir"];
             string option = (string)table["option"];
@@ -180,6 +203,7 @@ namespace RoboCopyMan
             string? logDatetimeFmt = null;
             string? xdDirs = null;
             string? xfFiles = null;
+            bool testMode = false;
             if (table.ContainsKey("logDir"))
             {
                 logDir = (string)table["logDir"];
@@ -211,15 +235,20 @@ namespace RoboCopyMan
                 else
                     Debug.WriteLine($"Enable xfFiles: {xfFiles}");
             }
-            bool testMode = false;
             if (table.ContainsKey("testMode"))
             {
                 testMode = (bool)table["testMode"];
                 Debug.WriteLine($"Enable testMode: {testMode}");
             }
 
+            bool disableForcedBackup = false;
             string? precommand = null;
             string? postcommand = null;
+            if (table.ContainsKey("disableForcedBackup"))
+            {
+                disableForcedBackup = (bool)table["disableForcedBackup"];
+                Debug.WriteLine($"Enable disableForcedBackup: {disableForcedBackup}");
+            }
             if (table.ContainsKey("precommand"))
             {
                 precommand = (string)table["precommand"];
@@ -237,6 +266,8 @@ namespace RoboCopyMan
             return new BackupSetting()
             {
                 Title = title,
+                Order = order,
+
                 SrcDir = srcDir,
                 DstDir = dstDir,
                 Option = option,
@@ -248,7 +279,8 @@ namespace RoboCopyMan
                 XfFiles = xfFiles,
                 TestMode = testMode,
 
-                Precoomand = precommand,
+                DisableForcedBackup = disableForcedBackup,
+                Precommand = precommand,
                 Postcommand = postcommand,
 
                 IntervalMinutes = intervalMin,

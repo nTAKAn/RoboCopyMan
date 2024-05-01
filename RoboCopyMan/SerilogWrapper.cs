@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Serilog;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 namespace RoboCopyMan
 {
