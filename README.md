@@ -77,6 +77,8 @@
 
 # バックアップ設定のタイトル
 title = "Backup"
+# 表示順番 (このオプションは任意: order を指定すると order で降順ソートして表示します)
+order = 1
 
 # バックアップ元ディレクトリ
 srcDir = "C:\\folder"
@@ -95,9 +97,11 @@ option = "/MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE"
 # 除外するディレクトリ・ファイル (このオプションは任意： コメントアウトすることで無効化（/XD, /XF オプションを付加しない）
 xdDirs = "\"System Volume Information\" \"$RECYCLE.BIN\""
 # xfFiles = ""
-
 # テストモード (true: テストモード /L オプションを付加する, false または コメントアウト: 実際にコピーする)
 testMode = true
+
+# 強制バックアップ無効設定 (true: 強制バックアップ無効, false または コメントアウト: 強制バックアップ有効)
+# disableForcedBackup = true
 
 # バックアップ間隔（分）
 intervalMinutes = 60
@@ -109,6 +113,7 @@ delayMinutes = 5
 #     robocopy {SrcDir} {DstDir} {Option} /LOG:{LogFilePath} /XD {xdDirs} /XF {xfFiles}
 #
 # robocopy C:\folder D:\backup /L /MIR /XJF /XJD /COPY:DAT /DCOPY:DAT /FFT /R:1 /W:10 /MT:128 /NP /TEE /LOG:D:\backup\logs\sample-20210101-123456.txt /XD "System Volume Information" "$RECYCLE.BIN"
+
 ```
 
 ## アプリの動作
