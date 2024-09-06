@@ -10,7 +10,7 @@ namespace RoboCopyMan
         /// <summary>
         /// 非同期バックアップ防止用のセマフォ
         /// </summary>
-        static readonly SemaphoreSlim _semaphore = new(1, 1);
+        private static readonly SemaphoreSlim _semaphore = new(1, 1);
         /// <summary>
         /// 初回フラグ
         /// </summary>
@@ -161,6 +161,35 @@ namespace RoboCopyMan
 
             try
             {
+                // バックアップ先のディレクトリが存在しない場合は作成する
+                if (!Directory.Exists(Setting.DstDir))
+                {
+                    if (MessageBox.Show($"バックアップ先のディレクトリが存在しません。作成しますか？\n{Setting.DstDir}",
+                        "RoboCopyMan",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question,
+                        MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+                        return false;
+
+                    Directory.CreateDirectory(Setting.DstDir);
+                }
+
+                // ログ出力先のディレクトリが存在しない場合は作成する
+                if (!string.IsNullOrEmpty(Setting.LogDir))
+                {
+                    if (!Directory.Exists(Setting.LogDir))
+                    {
+                        if (MessageBox.Show($"ログ出力先のディレクトリが存在しません。作成しますか？\n{Setting.LogDir}",
+                        "RoboCopyMan",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question,
+                        MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+                            return false;
+
+                        Directory.CreateDirectory(Setting.LogDir);
+                    }
+                }
+
                 // プリコマンド 実行
                 if (!string.IsNullOrEmpty(Setting.Precommand))
                 {
